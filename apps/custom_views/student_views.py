@@ -96,4 +96,49 @@ class StudentStatus(viewsets.ModelViewSet):
         status.delete()
         return Response({"message": "status deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
+
+class StudentHostel(viewsets.ModelViewSet):
+    queryset = StudentHostelService.objects.all()
+    serializer_class = StudentHostelSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def list(self , request):
+        serializer = StudentHostelSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        hostel = get_object_or_404(self.queryset, many=True)
+        serializer = StudentHostelSerializer(hostel)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    def create(self, request):
+        serializer = StudentHostelSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, pk=None):
+        hostel = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentHostelSerializer(hostel, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     
+
+    def partial_update(self, request, pk=None):
+        hostel = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentHostelSerializer(hostel, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self, request, pk=None):
+        hostel = get_object_or_404(self.queryset, pk=pk)
+        hostel.delete()
+        return Response({"message":"hostel deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
