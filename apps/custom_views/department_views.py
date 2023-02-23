@@ -33,6 +33,7 @@ def department_list_create_view(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def department_update_delete_view(request, slug):
     data = request.data
     if request.method == "GET":
@@ -64,6 +65,7 @@ def department_update_delete_view(request, slug):
 
 # department Chief CRUD start
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def department_chief_list_create_view(request):
     if request.method == 'GET':
         chief = departments_models.DepartmentChief.objects.all()
@@ -79,6 +81,7 @@ def department_chief_list_create_view(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def department_chief_update_delete_view(request, pk):
     if request.method == "GET":
         chief = departments_models.DepartmentChief.objects.get(pk=pk)
@@ -101,6 +104,7 @@ def department_chief_update_delete_view(request, pk):
 
 # department program level CRUD start
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def department_programlevel_list_create_view(request):
     if request.method == 'GET':
         programlevel = departments_models.DepartmentProgramLevel.objects.all()
@@ -116,6 +120,7 @@ def department_programlevel_list_create_view(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def department_programlevel_update_delete_view(request, pk):
     if request.method == "GET":
         programlevel = departments_models.DepartmentProgramLevel.objects.get(pk=pk)
@@ -138,6 +143,7 @@ def department_programlevel_update_delete_view(request, pk):
 
 # start of semester
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def semester_list_create_view(request):
     if request.method == 'GET':
         semester = departments_models.Semester.objects.all()
@@ -153,6 +159,7 @@ def semester_list_create_view(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def semester_update_delete_view(request, pk):
     if request.method == "GET":
         semester = departments_models.Semester.objects.get(pk=pk)
