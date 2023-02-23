@@ -35,7 +35,7 @@ class UserType(models.Model):
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=300, unique=True)
     username = models.CharField(max_length=255)
-    user_type = models.ForeignKey(UserType, on_delete=models.SET_NULL, null=True, blank=True)
+    user_type = models.ManyToManyField(UserType, related_name="user_type")
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)

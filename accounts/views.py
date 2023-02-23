@@ -1,11 +1,30 @@
 from django.shortcuts import render
-from .serializers import UserSerializer, UserTypeSerializer, PermissionSerializer, UserAddressSerializer
+from .serializers import UserSerializer, UserTypeSerializer, PermissionSerializer, UserAddressSerializer, UserSerializerWithToken
 from .models import User, UserType, UserAddress
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes , api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.contrib.auth.models import Permission
+from django.contrib.auth.hashers import make_password
+
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attr):
+        data = super().validate(attr)
+        serializer = UserSerializerWithToken(self.user).data
+
+        for key, value in serializer.items():
+            if key == 'is_active' and value == False:
+                return False
+            data[key] = value
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 
 @api_view(['GET','POST'])
@@ -16,12 +35,41 @@ def user_list_create_view(request):
         serializer = UserSerializer(user, many=True)
         return Response(serializer.data)
     if request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+        data  = request.data
+        username = data["username"]
+        email = data["email"]
+        password = data["password"]
+        re_password = data["re_password"]
+        user_type = data["user_type"]
+        print(user_type)
+        if User.objects.filter(email=email).exists():
+            return Response({"message" : "User with this email already exists "}, status=status.HTTP_400_BAD_REQUEST)
+        elif User.objects.filter(username=username).exists():
+            return Response({"message" : "User with this username already exists "}, status=status.HTTP_400_BAD_REQUEST)
+        elif len(username) < 3:
+            return Response({"message" : "Username should contais at least 3 characters "},status=status.HTTP_400_BAD_REQUEST)
+
+        elif password != re_password:
+            return Response({
+                "message" : "Passwords do not match "
+            },status=status.HTTP_400_BAD_REQUEST)
+        elif len(password) < 6:
+            return Response({
+                "message" : "A strong password contains at least 6 characters "
+            },status=status.HTTP_400_BAD_REQUEST)
+
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            user  = User.objects.create_user(
+                email=email, 
+                username=username,
+                password=password
+            )
+            for t in user_type:
+                u_type = UserType.objects.get(id=t)
+                user.user_type.add(u_type)
+                user.save()
+            serializer = UserSerializerWithToken(user, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])

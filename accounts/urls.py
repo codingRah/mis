@@ -3,6 +3,7 @@ from . import views
 
 
 urlpatterns = [
+    path("login/", views.MyTokenObtainPairView.as_view()),
     path('list-create/', views.user_list_create_view),
     path('update-delete/<str:pk>/', views.user_update_delete_view),
     path('usertype/list-create/', views.usertype_list_create_view),

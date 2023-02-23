@@ -9,7 +9,7 @@ from apps.custom_models import departments_models
 
 # department list create update delete file start
 @api_view(['GET', 'POST'])
-# @permission_classes(IsAuthenticated,)
+@permission_classes([IsAuthenticated])
 def department_list_create_view(request):
     data = request.data
     if request.method == 'GET':
@@ -21,6 +21,8 @@ def department_list_create_view(request):
         description = data['description']
         code = data['code']
         created_at = data['created_at']
+
+        print(created_at)
 
         department = departments_models.Department.objects.create(
             name=name,

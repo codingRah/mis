@@ -10,7 +10,7 @@ class Student(models.Model):
         ("خانم", "خانم"),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    kankor_id = models.CharField(max_length=200, unique=True)
+    kankor_id = models.CharField(max_length=200)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     father_name = models.CharField(max_length=200)
