@@ -14,7 +14,7 @@ class InstructorViews(viewsets.ModelViewSet):
 
     queryset = instructors_models.Staff.objects.all()
     serializer_class = instructor_serializers.InstructorSerializer
-    permission_classes =  [IsAuthenticated]
+    permission_classes =  [IsAuthenticated,]
     
     def list(self, request):
         serializer = instructor_serializers.InstructorSerializer(self.queryset, many=True)
@@ -30,7 +30,8 @@ class InstructorViews(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def update(self, request,pk=None):
         instructor = get_object_or_404(self.queryset, pk=pk)
@@ -38,7 +39,8 @@ class InstructorViews(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         instructor = get_object_or_404(self.queryset, pk=pk)
@@ -46,7 +48,8 @@ class InstructorViews(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     def destroy(self, request, pk=None):
@@ -60,7 +63,7 @@ class InstructorCart(viewsets.ModelViewSet):
 
     queryset = instructors_models.StaffNationlityCartInfo.objects.all()
     serializer_class = instructor_serializers.InstructorNationalityCartInfoSerializer
-    permission_classes =  [IsAuthenticated]
+    permission_classes =  [IsAuthenticated,]
 
     def list(self, request):
         serializer = instructor_serializers.InstructorNationalityCartInfoSerializer(self.queryset, many=True)
@@ -76,7 +79,8 @@ class InstructorCart(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def update(self, request,pk=None):
         cart = get_object_or_404(self.queryset, pk=pk)
@@ -84,7 +88,8 @@ class InstructorCart(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         cart = get_object_or_404(self.queryset, pk=pk)
@@ -92,7 +97,8 @@ class InstructorCart(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     def destroy(self, request, pk=None):
@@ -121,6 +127,9 @@ class InstructorEducation(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, {"message": "education is not created"})
+
 
     def update(self, request, pk=None):
         education = get_object_or_404(self.queryset,pk=pk)
@@ -128,7 +137,8 @@ class InstructorEducation(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         education = get_object_or_404(self.queryset, pk=pk)
@@ -136,7 +146,8 @@ class InstructorEducation(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         education = get_object_or_404(self.queryset, pk=pk)
@@ -147,7 +158,7 @@ class InstructorEducation(viewsets.ModelViewSet):
 class InstructorExperience(viewsets.ModelViewSet):
     queryset = instructors_models.StaffJobExperience.objects.all()
     serializer_class = instructor_serializers.InstructorExperienceSerializer
-    permission_classes= [IsAuthenticated]
+    permission_classes= [IsAuthenticated,]
 
 
     def list(self, request):
@@ -164,7 +175,8 @@ class InstructorExperience(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
         experience = get_object_or_404(self.queryset, pk=pk)
@@ -172,15 +184,17 @@ class InstructorExperience(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def partial_update(self, request, pk=None):
         experience = get_object_or_404(self.queryset, pk=pk)
-        serializer = instructor_serializers.InstructorExperienceSerializer(experience, data=request.data)
+        serializer = instructor_serializers.InstructorExperienceSerializer(experience, data=request.data, parial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def destroy(self, request, pk=None):
         experience = get_object_or_404(self.queryset, pk=pk)
@@ -191,7 +205,7 @@ class InstructorExperience(viewsets.ModelViewSet):
 class InstructorExtraInfo(viewsets.ModelViewSet):
     queryset = instructors_models.StaffExtraInfo.objects.all()
     serializer_class = instructor_serializers.InstructorExtraInfoSerializer
-    permission_classes= [IsAuthenticated]
+    permission_classes= [IsAuthenticated,]
 
 
     def list(self, request):
@@ -208,7 +222,8 @@ class InstructorExtraInfo(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
         extraInfo = get_object_or_404(self.queryset, pk=pk)
@@ -216,15 +231,17 @@ class InstructorExtraInfo(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def partial_update(self, request, pk=None):
         extraInfo = get_object_or_404(self.queryset, pk=pk)
-        serializer = instructor_serializers.InstructorExtraInfoSerializer(extraInfo, data=request.data)
+        serializer = instructor_serializers.InstructorExtraInfoSerializer(extraInfo, data=request.data, parial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def destroy(self, request, pk=None):
         extraInfo = get_object_or_404(self.queryset, pk=pk)
