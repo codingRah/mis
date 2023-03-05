@@ -95,7 +95,7 @@ def user_update_delete_view(request, pk):
 
 
 @api_view(['GET','POST'])
-@permission_classes(IsAuthenticated,)
+# @permission_classes(IsAuthenticated,)
 def usertype_list_create_view(request):
     if request.method == 'GET':
         usertype = UserType.objects.all()
@@ -110,7 +110,7 @@ def usertype_list_create_view(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes(IsAuthenticated,)
+# @permission_classes(IsAuthenticated,)
 def usertype_update_delete_view(request, pk):
     if request.method == 'GET':
         usertype = UserType.objects.get(pk=pk)
