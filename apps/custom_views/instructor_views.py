@@ -4,8 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from apps.custom_models import instructors_models
+from django.db.models import Q
 from rest_framework import viewsets
 from apps.custom_serializers import instructor_serializers
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # staff list create update delete file start
@@ -14,10 +17,37 @@ class InstructorViews(viewsets.ModelViewSet):
 
     queryset = instructors_models.Staff.objects.all()
     serializer_class = instructor_serializers.InstructorSerializer
-    permission_classes =  [IsAuthenticated,]
+    # permission_classes =  [IsAuthenticated,]
+    # filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    # filterset_fields = ["first_name",]
+    # search_fields = ["first_name",]
     
     def list(self, request):
-        serializer = instructor_serializers.InstructorSerializer(self.queryset, many=True)
+        # if self.search_fields == None:
+
+        # else:
+        #     staff = instructors_models.Staff.objects.filter(first_name__icontains=self.search_fields)
+        data = request.data
+        search = request.query_params.get("search")
+        order = request.query_params.get("order")
+        first_name = ""
+        
+        if search == None:
+            search = ""
+        if order == None:
+            order == "asc"
+        if order == "desc":
+            first_name = "first_name"
+         
+        else:
+            first_name = "-first_name"
+           
+
+        staff = instructors_models.Staff.objects.filter(
+            Q(first_name__icontains=search) |
+            Q(gender__icontains=search)|
+            Q(department__name__icontains=search)).order_by(first_name)
+        serializer = instructor_serializers.InstructorSerializer(staff, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def retrieve(self, request, pk=None):
@@ -110,7 +140,7 @@ class InstructorCart(viewsets.ModelViewSet):
 class InstructorEducation(viewsets.ModelViewSet):
     queryset = instructors_models.StaffEducation.objects.all()
     serializer_class = instructor_serializers.InstructorEductionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,]
 
 
     def list(self, request):
