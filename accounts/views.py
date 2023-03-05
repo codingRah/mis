@@ -41,7 +41,7 @@ def user_list_create_view(request):
         password = data["password"]
         re_password = data["re_password"]
         user_type = data["user_type"]
-        print(user_type)
+       
         if User.objects.filter(email=email).exists():
             return Response({"message" : "User with this email already exists "}, status=status.HTTP_400_BAD_REQUEST)
         elif User.objects.filter(username=username).exists():

@@ -9,14 +9,14 @@ from django.db.models.signals import post_save
 
 class Staff(models.Model):
     GENDER = (
-        ("Male", "Male"),
-        ("Female", "Female"),
+        ("آقا", "آقا"),
+        ("خانم", "خانم"),
     )
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     father_name = models.CharField(max_length=200)
-    gender = models.CharField(max_length=20, choices=GENDER)
+    gender = models.CharField(max_length=20, choices=GENDER, default='آقا')
     dob = models.DateField(null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
@@ -24,14 +24,7 @@ class Staff(models.Model):
     image = models.ImageField(upload_to="staffs/avatar")
 
     def __str__(self):
-        return self.first_name
-    
-def staff_profile_created(sender, instance, created, **kwargs):
-    if created:
-        user = instance
-        staff_profile = Staff.objects.create(user=user, first_name = user.username)
-
-post_save.connect(staff_profile_created, sender=User)            
+        return self.first_name          
 
 
 class StaffNationlityCartInfo(models.Model):

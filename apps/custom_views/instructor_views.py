@@ -15,7 +15,7 @@ class InstructorViews(viewsets.ModelViewSet):
     queryset = instructors_models.Staff.objects.all()
     serializer_class = instructor_serializers.InstructorSerializer
     permission_classes =  [IsAuthenticated]
-
+    
     def list(self, request):
         serializer = instructor_serializers.InstructorSerializer(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

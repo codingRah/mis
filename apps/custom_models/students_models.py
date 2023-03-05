@@ -26,11 +26,7 @@ class Student(models.Model):
     def __str__(self):
         return self.first_name
 
-def student_profile_created(sender, instance, created, **kwargs):
-    if created:
-        user = instance
-        student_profile = Student.objects.create(user=user, first_name = user.username)
-post_save.connect(student_profile_created, sender=User)
+
 
 class StudentStatus(models.Model):
     STATUS = (
@@ -63,11 +59,11 @@ class StudentNationlityCartInfo(models.Model):
 
 class StudentHostelService(models.Model):
     SERVICE = (
-        ("Hostel", "Hostel"),
-        ("Money", "Money"),
+        ("لیلیه", "لیلیه"),
+        ("بدل اعاشه", "بدل اعاشه"),
     )
     student  = models.OneToOneField(Student, on_delete=models.SET_NULL, null=True)
-    service_type = models.CharField(max_length=30, choices=SERVICE)
+    service_type = models.CharField(max_length=30, choices=SERVICE, default='بدل اعاشه')
     wing_no = models.CharField(max_length=100, null=True, blank=True)
     room_no = models.CharField(max_length=100, null=True, blank=True)
 
