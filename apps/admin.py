@@ -16,4 +16,8 @@ admin.site.register(instructors_models.StaffExtraInfo)
 admin.site.register(instructors_models.StaffJobExperience)
 admin.site.register(instructors_models.StaffNationlityCartInfo)
 admin.site.register(students_models.Student)
+admin.site.register(students_models.StudentHostelService)
+admin.site.register(students_models.StudentNationlityCartInfo)
+admin.site.register(students_models.StudentStatus)
+admin.site.register(students_models.StudentRelationContact)
 
