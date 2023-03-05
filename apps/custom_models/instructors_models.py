@@ -12,6 +12,10 @@ class Staff(models.Model):
         ("آقا", "آقا"),
         ("خانم", "خانم"),
     )
+    STATUS = (
+        ("فعال", "فعال"),
+        ("غیر فعال", "غیر فعال"),
+    )
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
@@ -21,6 +25,7 @@ class Staff(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=20)
+    status = models.CharField(max_length=20, choices=STATUS, default='فعال')
     image = models.ImageField(upload_to="staffs/avatar")
 
     def __str__(self):

@@ -11,8 +11,6 @@ router.register('experience', instructor_views.InstructorExperience,basename='ex
 router.register('education', instructor_views.InstructorEducation,basename='education')
 router.register('extraInfo', instructor_views.InstructorExtraInfo,basename='extraInfo')
 
-
-
 urlpatterns = [
     path('', include(router.urls)),
 ]

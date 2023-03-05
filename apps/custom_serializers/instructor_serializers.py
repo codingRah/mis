@@ -4,7 +4,7 @@ from apps.custom_models import instructors_models
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = instructors_models.Staff
-        fields = ['id', 'user', 'first_name','last_name','father_name','gender','dob','department','bio','phone','image']
+        fields = ['id', 'user', 'first_name','last_name','father_name','gender','dob','department','bio','phone','status','image']
  
         
 class InstructorNationalityCartInfoSerializer(serializers.ModelSerializer):
