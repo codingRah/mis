@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserType
-        fields = ['name']
+        fields = ['name', 'description']
     
 
 class UserAddressSerializer(serializers.ModelSerializer):
@@ -35,8 +35,6 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         fields = ['id', 'username', 'email','authority', 'token']
 
     def get_authority(self, obj):
-        if obj.is_staff:
-            return "admin"
         return obj.user_type.values_list("name", flat=True)
 
     def get_token(self, obj):

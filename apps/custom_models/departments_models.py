@@ -35,7 +35,6 @@ class Department(models.Model):
     
 
 class DepartmentChief(models.Model):
-    
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL,  null=True)
     from_date = models.DateField()

@@ -1,13 +1,24 @@
 from rest_framework import serializers
 from apps.custom_models.departments_models import Department, DepartmentChief, DepartmentProgramLevel, Semester
 from .instructor_serializers import InstructorSerializer
+from accounts.serializers import UserSerializer
+from accounts.models import User
 
-
+class UserShortInforSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username", "email"]
 
 class DepartmentChiefSerilizer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = DepartmentChief
         fields = ['id','department','user','from_date','to_date']
+
+
+    def get_user(self, obj):
+        data = obj.user
+        return UserShortInforSerializer(data, many=False).data
 
 
 class DepartmentSerializer(serializers.ModelSerializer):

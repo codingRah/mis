@@ -13,8 +13,19 @@ from apps.custom_models import departments_models
 @permission_classes([IsAuthenticated])
 def department_list_create_view(request):
     data = request.data
+    search = request.query_params.get("search")
+    order = request.query_params.get("order")
+    name = ""
+    if search == None:
+        search = ""
+    if order == None:
+        order == "asc"
+    if order == "asc":
+        name = "name"
+    else:
+        name = "-name"
     if request.method == 'GET':
-        department = departments_models.Department.objects.all()
+        department = departments_models.Department.objects.filter(name__icontains=search).order_by(name)
         serializer = departments_serializers.DepartmentSerializer(department, many=True)
         return Response(serializer.data)
     if request.method == 'POST':

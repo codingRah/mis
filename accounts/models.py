@@ -27,6 +27,7 @@ class UserAccountManager(BaseUserManager):
 
 class UserType(models.Model):
     name = models.CharField(max_length=250)
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f'{self.name}'
