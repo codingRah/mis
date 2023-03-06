@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.contrib.auth.models import Permission
 from django.contrib.auth.hashers import make_password
-
+from drf_api_logger import API_LOGGER_SIGNAL
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -182,3 +182,8 @@ def useraddress_update_delete_view(request, pk):
         address.delete()
         return Response({'success': "useraddress deleted successfully"},status=status.HTTP_200_OK)
 
+def listener_one(**kwargs):
+    print(kwargs)
+    
+
+API_LOGGER_SIGNAL.listen += listener_one    
