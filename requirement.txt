@@ -1,5 +1,6 @@
 asgiref==3.6.0
 backports.zoneinfo==0.2.1
+bleach==6.0.0
 certifi==2022.12.7
 cffi==1.15.1
 charset-normalizer==3.0.1
@@ -9,11 +10,13 @@ cryptography==39.0.1
 defusedxml==0.7.1
 Django==4.1.6
 django-cors-headers==3.13.0
+django-filter==22.1
 django-jalali-date==1.0.1
 django-templated-mail==1.1.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==4.8.0
 djoser==2.1.0
+drf-api-logger==1.1.12
 idna==3.4
 itypes==1.2.0
 jdatetime==4.1.0
@@ -34,3 +37,4 @@ sqlparse==0.4.3
 tzdata==2022.7
 uritemplate==4.1.1
 urllib3==1.26.14
+webencodings==0.5.1
