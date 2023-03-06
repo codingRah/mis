@@ -1,10 +1,11 @@
 /env
 /db.sqlite3
-/apps/migrations
-/apps/__pycache__
+
 /management/__pycache__
-/apps/custom_models/__pycache__
+
 /accounts/migrations
+/students/migrations
+/departments/migrations
 /management/__pycache__
 /accounts/__pycache__
 ### Django ###
@@ -21,8 +22,6 @@ media
 
 
 **/__pycache__/
-
-/apps/custom_models/__pycache__
 
 
 # Byte-compiled / optimized / DLL files

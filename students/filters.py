@@ -1,5 +1,5 @@
 from django_filters.rest_framework import FilterSet
-from apps.custom_models.students_models import Student
+from .models import Student
 
 
 

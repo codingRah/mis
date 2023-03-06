@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.custom_models.students_models import Student, StudentStatus, StudentNationlityCartInfo, StudentHostelService, StudentRelationContact
+from .models import Student, StudentStatus, StudentNationlityCartInfo, StudentHostelService, StudentRelationContact
 
 
 class StudentsSerializer(serializers.ModelSerializer):

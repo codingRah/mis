@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     
     # custom app
     "accounts.apps.AccountsConfig",
-    "apps.apps.AppsConfig",
+    "departments.apps.DepartmentsConfig",
+    "students.apps.StudentsConfig",
 
     # third party app
     'rest_framework',

@@ -11,7 +11,8 @@ urlpatterns = [
     path("auth/", include("djoser.urls.authtoken")),
     path("auth/", include("djoser.urls.jwt")),
     path('user/', include('accounts.urls')),
-    path('apps/', include('apps.custom_urls.department_urls')),
-    path('instructor/', include('apps.custom_urls.instructor_urls')),
-    path('student/', include('apps.custom_urls.student_urls')),
+    path('department/', include('departments.urls')),
+    # path('instructor/', include('apps.custom_urls.instructor_urls')),
+    path('student/', include('students.urls')),
+    # path('status/', include('apps.custom_urls.student_status_urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

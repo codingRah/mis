@@ -1,11 +1,11 @@
-from apps.custom_serializers import departments_serializers
+from . import serializers
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes , api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import Permission
-from apps.custom_models import departments_models
+from . import models
 
 
 # department list create update delete file start
@@ -13,9 +13,20 @@ from apps.custom_models import departments_models
 @permission_classes([IsAuthenticated])
 def department_list_create_view(request):
     data = request.data
+    search = request.query_params.get("search")
+    order = request.query_params.get("order")
+    name = ""
+    if search == None:
+        search = ""
+    if order == None:
+        order == "asc"
+    if order == "asc":
+        name = "name"
+    else:
+        name = "-name"
     if request.method == 'GET':
-        department = departments_models.Department.objects.all()
-        serializer = departments_serializers.DepartmentSerializer(department, many=True)
+        department = models.Department.objects.filter(name__icontains=search).order_by(name)
+        serializer = serializers.DepartmentSerializer(department, many=True)
         return Response(serializer.data)
     if request.method == 'POST':
         name = data['name']
@@ -25,13 +36,13 @@ def department_list_create_view(request):
 
         print(created_at)
 
-        department = departments_models.Department.objects.create(
+        department = models.Department.objects.create(
             name=name, 
             description=description, 
             code=code, 
             created_at=created_at
         )
-        serializer = departments_serializers.DepartmentSerializer(department, many=False)
+        serializer = serializers.DepartmentSerializer(department, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -39,8 +50,8 @@ def department_list_create_view(request):
 def department_update_delete_view(request, slug):
     data = request.data
     if request.method == "GET":
-        department = departments_models.Department.objects.get(slug=slug)
-        serializer = departments_serializers.DepartmentSerializer(department)
+        department = models.Department.objects.get(slug=slug)
+        serializer = serializers.DepartmentSerializer(department)
         return Response(serializer.data)
 
     if request.method == 'PUT':
@@ -48,17 +59,17 @@ def department_update_delete_view(request, slug):
         description = data['description']
         code = data['code']
         created_at = data['created_at']
-        department = departments_models.Department.objects.get(slug=slug)
+        department = models.Department.objects.get(slug=slug)
         department.name = name
         department.description = description
         department.code = code
         department.created_at = created_at
         department.save()
         
-        serializer = departments_serializers.DepartmentSerializer(department, many=False)
+        serializer = serializers.DepartmentSerializer(department, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     if request.method == 'DELETE':        
-        department = departments_models.Department.objects.get(slug=slug)
+        department = models.Department.objects.get(slug=slug)
         department.delete()
         return Response({'message': 'Successfully department deleted!!'}, status=status.HTTP_200_OK)
 
@@ -70,11 +81,11 @@ def department_update_delete_view(request, slug):
 @permission_classes([IsAuthenticated])
 def department_chief_list_create_view(request):
     if request.method == 'GET':
-        chief = departments_models.DepartmentChief.objects.all()
-        serializer = departments_serializers.DepartmentChiefSerilizer(chief, many=True)
+        chief = models.DepartmentChief.objects.all()
+        serializer = serializers.DepartmentChiefSerilizer(chief, many=True)
         return Response(serializer.data)
     if request.method == 'POST':
-        serializer = departments_serializers.DepartmentChiefSerilizer(data=request.data)
+        serializer = serializers.DepartmentChiefSerilizer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -86,19 +97,19 @@ def department_chief_list_create_view(request):
 @permission_classes([IsAuthenticated])
 def department_chief_update_delete_view(request, pk):
     if request.method == "GET":
-        chief = departments_models.DepartmentChief.objects.get(pk=pk)
-        serializer = departments_serializers.DepartmentChiefSerilizer(chief)
+        chief = models.DepartmentChief.objects.get(pk=pk)
+        serializer = serializers.DepartmentChiefSerilizer(chief)
         return Response(serializer.data)
     if request.method == 'PUT':
-        chief = departments_models.DepartmentChief.objects.get(pk=pk)
-        serializer = departments_serializers.DepartmentChiefSerilizer(data=request.data, instance=chief)
+        chief = models.DepartmentChief.objects.get(pk=pk)
+        serializer = serializers.DepartmentChiefSerilizer(data=request.data, instance=chief)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response({'error':'data is not valid!!'}, status=status.HTTP_400_BAD_REQUEST)
     if request.method == 'DELETE':        
-        chief = departments_models.DepartmentChief.objects.get(pk=pk)
+        chief = models.DepartmentChief.objects.get(pk=pk)
         chief.delete()
         return Response({'message': 'Successfully department chief deleted!!'}, status=status.HTTP_200_OK)
     
@@ -109,11 +120,11 @@ def department_chief_update_delete_view(request, pk):
 @permission_classes([IsAuthenticated])
 def department_programlevel_list_create_view(request):
     if request.method == 'GET':
-        programlevel = departments_models.DepartmentProgramLevel.objects.all()
-        serializer = departments_serializers.DepartmentProgramLevelSerializer(programlevel, many=True)
+        programlevel = models.DepartmentProgramLevel.objects.all()
+        serializer = serializers.DepartmentProgramLevelSerializer(programlevel, many=True)
         return Response(serializer.data)
     if request.method == 'POST':
-        serializer = departments_serializers.DepartmentProgramLevelSerializer(data=request.data)
+        serializer = serializers.DepartmentProgramLevelSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -125,19 +136,19 @@ def department_programlevel_list_create_view(request):
 @permission_classes([IsAuthenticated])
 def department_programlevel_update_delete_view(request, pk):
     if request.method == "GET":
-        programlevel = departments_models.DepartmentProgramLevel.objects.get(pk=pk)
-        serializer = departments_serializers.DepartmentProgramLevelSerializer(programlevel)
+        programlevel = models.DepartmentProgramLevel.objects.get(pk=pk)
+        serializer = serializers.DepartmentProgramLevelSerializer(programlevel)
         return Response(serializer.data)
     if request.method == 'PUT':
-        programlevel = departments_models.DepartmentProgramLevel.objects.get(pk=pk)
-        serializer = departments_serializers.DepartmentProgramLevelSerializer(data=request.data, instance=programlevel)
+        programlevel = models.DepartmentProgramLevel.objects.get(pk=pk)
+        serializer = serializers.DepartmentProgramLevelSerializer(data=request.data, instance=programlevel)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response({'error':'data is not valid!!'}, status=status.HTTP_400_BAD_REQUEST)
     if request.method == 'DELETE':        
-        programlevel = departments_models.DepartmentProgramLevel.objects.get(pk=pk)
+        programlevel = models.DepartmentProgramLevel.objects.get(pk=pk)
         programlevel.delete()
         return Response({'message': 'Successfully department progarm level deleted!!'}, status=status.HTTP_200_OK)
  
@@ -148,11 +159,11 @@ def department_programlevel_update_delete_view(request, pk):
 @permission_classes([IsAuthenticated])
 def semester_list_create_view(request):
     if request.method == 'GET':
-        semester = departments_models.Semester.objects.all()
-        serializer = departments_serializers.SemesterSerializer(semester, many=True)
+        semester = models.Semester.objects.all()
+        serializer = serializers.SemesterSerializer(semester, many=True)
         return Response(serializer.data)
     if request.method == 'POST':
-        serializer = departments_serializers.SemesterSerializer(data=request.data)
+        serializer = serializers.SemesterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -164,19 +175,19 @@ def semester_list_create_view(request):
 @permission_classes([IsAuthenticated])
 def semester_update_delete_view(request, pk):
     if request.method == "GET":
-        semester = departments_models.Semester.objects.get(pk=pk)
-        serializer = departments_serializers.SemesterSerializer(semester)
+        semester = models.Semester.objects.get(pk=pk)
+        serializer = serializers.SemesterSerializer(semester)
         return Response(serializer.data)
     if request.method == 'PUT':
-        semester = departments_models.Semester.objects.get(pk=pk)
-        serializer = departments_serializers.SemesterSerializer(data=request.data, instance=semester)
+        semester = models.Semester.objects.get(pk=pk)
+        serializer = serializers.SemesterSerializer(data=request.data, instance=semester)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response({'error':'data is not valid!!'}, status=status.HTTP_400_BAD_REQUEST)
     if request.method == 'DELETE':        
-        semester = departments_models.Semester.objects.get(pk=pk)
+        semester = models.Semester.objects.get(pk=pk)
         semester.delete()
         return Response({'message': 'Successfully semester deleted!!'}, status=status.HTTP_200_OK)
  
