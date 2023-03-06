@@ -11,7 +11,7 @@ from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.custom_filters.filters import StaffFilter
 from rest_framework.filters import SearchFilter,OrderingFilter
-
+from apps.custom_pagination import instructor_paginations
 
 # staff list create update delete file start
 
@@ -19,30 +19,37 @@ class InstructorViews(viewsets.ModelViewSet):
 
     queryset = instructors_models.Staff.objects.all()
     serializer_class = instructor_serializers.InstructorSerializer
+    pagination_class = instructor_paginations.InstructorPaginator       
     # permission_classes =  [IsAuthenticated,]
-    filter_backends = [DjangoFilterBackend, SearchFilter,OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
     filterset_class = StaffFilter
-    search_fields = ["first_name","last_name"]
+    search_fields = ["first_name",'last_name']
     ordering_fields = ["first_name"]
+
     
     # def list(self, request):
-    #     data = request.data
-    #     search = request.query_params.get("search")
-    #     order = request.query_params.get("order")
-    #     first_name = "" 
-    #     if search == None:
-    #         search = ""
-    #     if order == None:
-    #         order == "asc"
-    #     if order == "desc":
-    #         first_name = "first_name" 
-    #     else:
-    #         first_name = "-first_name"
-    #     staff = instructors_models.Staff.objects.filter(
-    #         Q(first_name__icontains=search) |
-    #         Q(gender__icontains=search)|
-    #         Q(department__name__icontains=search)).order_by(first_name)
-    #     staff = instructors_models.Staff.objects.all()
+       
+        # data = request.data
+        # search = request.query_params.get("search")
+        # order = request.query_params.get("order")
+        # first_name = ""
+        
+        # if search == None:
+        #     search = ""
+        # if order == None:
+        #     order == "asc"
+        # if order == "desc":
+        #     first_name = "first_name"
+         
+        # else:
+        #     first_name = "-first_name"
+           
+
+        # staff = instructors_models.Staff.objects.filter(
+        #     Q(first_name__icontains=search) |
+        #     Q(gender__icontains=search)|
+        #     Q(department__name__icontains=search)).order_by(first_name)
+        # staff = instructors_models.Staff.objects.all()
 
         # serializer = instructor_serializers.InstructorSerializer(self.queryset, many=True)
         # return Response(serializer.data, status=status.HTTP_200_OK)
