@@ -9,7 +9,7 @@ from rest_framework import viewsets
 from apps.custom_serializers import instructor_serializers
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
-from apps.custom_filters.filters import StaffFilter
+from apps.custom_filters.instructor_filters import StaffFilter
 from rest_framework.filters import SearchFilter,OrderingFilter
 from apps.custom_pagination import instructor_paginations
 
@@ -19,7 +19,7 @@ class InstructorViews(viewsets.ModelViewSet):
 
     queryset = instructors_models.Staff.objects.all()
     serializer_class = instructor_serializers.InstructorSerializer
-    pagination_class = instructor_paginations.InstructorPaginator       
+    pagination_class = instructor_paginations.InstructorPagination       
     # permission_classes =  [IsAuthenticated,]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
     filterset_class = StaffFilter

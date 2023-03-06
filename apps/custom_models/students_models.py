@@ -16,7 +16,7 @@ class Student(models.Model):
     father_name = models.CharField(max_length=200)
     grand_father_name = models.CharField(max_length=200)
     school = models.CharField(max_length=200)
-    score = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    score = models.DecimalField(max_digits=6, decimal_places=3, default=0)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     gender = models.CharField(max_length=20, choices=GENDER ,default='آقا')
     semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True)

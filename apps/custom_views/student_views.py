@@ -7,17 +7,23 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from apps.custom_serializers.students_serializers import StudentsSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
 from apps.custom_models.students_models import Student, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
-
-
+from django_filters.rest_framework import DjangoFilterBackend
+from apps.custom_filters.student_filters import StudentFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
+from apps.custom_pagination.student_pagination import StudentPagination
+from rest_framework import filters
 
 class StudentViews(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentsSerializer
-    permission_classes =  [IsAuthenticated,]
-
-    def list(self , request):
-        serializer = StudentsSerializer(self.queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # permission_classes =  [IsAuthenticated,]
+    # pagination_class = StudentPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
+    filterset_class = StudentFilter
+    search_fields = ["kankor_id","first_name","last_name"]
+    ordering_fields = ["first_name"]
+    
+    
 
     def retrieve(self, request, pk=None):
         student = get_object_or_404(self.queryset, pk=pk)
