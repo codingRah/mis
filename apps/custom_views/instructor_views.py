@@ -9,7 +9,7 @@ from rest_framework import viewsets
 from apps.custom_serializers import instructor_serializers
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
-from apps.filters.filters import StaffFilter
+from apps.custom_filters.filters import StaffFilter
 from rest_framework.filters import SearchFilter,OrderingFilter
 
 
@@ -26,28 +26,23 @@ class InstructorViews(viewsets.ModelViewSet):
     ordering_fields = ["first_name"]
     
     # def list(self, request):
-       
-        # data = request.data
-        # search = request.query_params.get("search")
-        # order = request.query_params.get("order")
-        # first_name = ""
-        
-        # if search == None:
-        #     search = ""
-        # if order == None:
-        #     order == "asc"
-        # if order == "desc":
-        #     first_name = "first_name"
-         
-        # else:
-        #     first_name = "-first_name"
-           
-
-        # staff = instructors_models.Staff.objects.filter(
-        #     Q(first_name__icontains=search) |
-        #     Q(gender__icontains=search)|
-        #     Q(department__name__icontains=search)).order_by(first_name)
-        # staff = instructors_models.Staff.objects.all()
+    #     data = request.data
+    #     search = request.query_params.get("search")
+    #     order = request.query_params.get("order")
+    #     first_name = "" 
+    #     if search == None:
+    #         search = ""
+    #     if order == None:
+    #         order == "asc"
+    #     if order == "desc":
+    #         first_name = "first_name" 
+    #     else:
+    #         first_name = "-first_name"
+    #     staff = instructors_models.Staff.objects.filter(
+    #         Q(first_name__icontains=search) |
+    #         Q(gender__icontains=search)|
+    #         Q(department__name__icontains=search)).order_by(first_name)
+    #     staff = instructors_models.Staff.objects.all()
 
         # serializer = instructor_serializers.InstructorSerializer(self.queryset, many=True)
         # return Response(serializer.data, status=status.HTTP_200_OK)

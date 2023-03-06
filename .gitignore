@@ -20,3 +20,5 @@ media
 
 
 **/__pycache__/
+
+/apps/custom_models/__pycache__
