@@ -25,33 +25,33 @@ class InstructorViews(viewsets.ModelViewSet):
     # filterset_fields = ["first_name",]
     # search_fields = ["first_name",]
     
-    # def list(self, request):
-    #     # if self.search_fields == None:
+    def list(self, request):
+        # if self.search_fields == None:
 
-    #     # else:
-    #         # staff = instructors_models.Staff.objects.filter(first_name__icontains=self.search_fields)
-    #     data = request.data
-    #     search = request.query_params.get("search")
-    #     order = request.query_params.get("order")
-    #     first_name = ""
+        # else:
+            # staff = instructors_models.Staff.objects.filter(first_name__icontains=self.search_fields)
+        data = request.data
+        search = request.query_params.get("search")
+        order = request.query_params.get("order")
+        first_name = ""
         
-    #     if search == None:
-    #         search = ""
-    #     if order == None:
-    #         order == "asc"
-    #     if order == "desc":
-    #         first_name = "first_name"
+        if search == None:
+            search = ""
+        if order == None:
+            order == "asc"
+        if order == "desc":
+            first_name = "first_name"
          
-    #     else:
-    #         first_name = "-first_name"
+        else:
+            first_name = "-first_name"
            
 
-    #     staff = instructors_models.Staff.objects.filter(
-    #         Q(first_name__icontains=search) |
-    #         Q(gender__icontains=search)|
-    #         Q(department__name__icontains=search)).order_by(first_name)
-    #     serializer = instructor_serializers.InstructorSerializer(staff, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
+        staff = instructors_models.Staff.objects.filter(
+            Q(first_name__icontains=search) |
+            Q(gender__icontains=search)|
+            Q(department__name__icontains=search)).order_by(first_name)
+        serializer = instructor_serializers.InstructorSerializer(staff, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def retrieve(self, request, pk=None):
         instructor = get_object_or_404(self.queryset, pk=pk)
