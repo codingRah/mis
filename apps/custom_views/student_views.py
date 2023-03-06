@@ -16,12 +16,12 @@ from rest_framework import filters
 class StudentViews(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentsSerializer
-    # permission_classes =  [IsAuthenticated,]
-    # pagination_class = StudentPagination
-    # filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
-    # filterset_class = StudentFilter
-    # search_fields = ["kankor_id","first_name","last_name"]
-    # ordering_fields = ["first_name"]
+    permission_classes =  [IsAuthenticated,]
+    pagination_class = StudentPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
+    filterset_class = StudentFilter
+    search_fields = ["kankor_id","first_name","last_name"]
+    ordering_fields = ["first_name"]
     
     
 
