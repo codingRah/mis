@@ -1,4 +1,7 @@
 from django.shortcuts import render
+
+# Create your views here.
+from django.shortcuts import render
 from .serializers import UserSerializer, UserTypeSerializer, PermissionSerializer, UserAddressSerializer, UserSerializerWithToken
 from .models import User, UserType, UserAddress
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer

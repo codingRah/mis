@@ -1,3 +1,5 @@
+
+
 from django.db.models.signals import  post_save
 from django.dispatch import receiver
 from apps.custom_models.departments_models import DepartmentProgramLevel, Semester

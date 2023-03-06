@@ -17,6 +17,6 @@ urlpatterns = [
     # semester url
     path('semester/create-list/', department_views.semester_list_create_view),
     path('semester/update-delete/<int:pk>/', department_views.semester_update_delete_view),
-    
-    
+
+
 ]

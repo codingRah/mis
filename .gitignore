@@ -5,6 +5,7 @@
 /management/__pycache__
 /apps/custom_models/__pycache__
 /accounts/migrations
+/management/__pycache__
 /accounts/__pycache__
 ### Django ###
 *.log
@@ -81,7 +82,3 @@ docs/_build/
 
 # PyBuilder
 target/
-
-
-
-
