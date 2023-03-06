@@ -1,16 +1,16 @@
 from rest_framework import viewsets
 from rest_framework import status
-from rest_framework.decorators import permission_classes
+from rest_framework.decorators import permission_classes,api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from apps.custom_serializers.students_serializers import StudentsSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
-from apps.custom_models.students_models import Student, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
+from .serializers import StudentsSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
+from .models import Student, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
 from django_filters.rest_framework import DjangoFilterBackend
-from apps.custom_filters.student_filters import StudentFilter
+from .filters import StudentFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
-from apps.custom_pagination.student_pagination import StudentPagination
+from .pagination import StudentPagination
 from rest_framework import filters
 
 class StudentViews(viewsets.ModelViewSet):
@@ -23,7 +23,10 @@ class StudentViews(viewsets.ModelViewSet):
     search_fields = ["kankor_id","first_name","last_name"]
     ordering_fields = ["first_name"]
     
-    
+    def list(self, request):
+        queryset = Student.objects.all()
+        serializer = StudentsSerializer(queryset,many=True)
+        return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
         student = get_object_or_404(self.queryset, pk=pk)
@@ -43,7 +46,7 @@ class StudentViews(viewsets.ModelViewSet):
         serializer = StudentsSerializer(student, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.create)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -61,54 +64,62 @@ class StudentViews(viewsets.ModelViewSet):
         student = get_object_or_404(self.queryset, pk=pk)
         student.delete()
         return Response({"message" : "student deleted successfuly"})
+# @api_view(['GET'])
+# def statuslist(request):
+#     st_status = StudentStatus.objects.all()
+#     serializer = StudentStatusSerializer(st_status, many=True)
+#     return Response(serializer.data)
 
-class StudentStatus(viewsets.ModelViewSet):
+class StudentStatusView(viewsets.ModelViewSet):
     queryset = StudentStatus.objects.all()
     serializer_class = StudentStatusSerializer
-    permission_classes = [IsAuthenticated,]
-
+    
+    
     def list(self, request):
-        serializer = StudentStatusSerializer(self.queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        queryset = StudentStatus.objects.all()
+        serializer = StudentStatusSerializer(queryset,many=True)
+        return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        status = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentStatusSerializer(status)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def create(self, request, pk=None):
+        st_status = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentStatusSerializer(st_status)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
         serializer = StudentStatusSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
     def update(self, request, pk=None):
-        status = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentStatusSerializer(status, data=request.data)
+        st_status = get_object_or_404(self.queryset,pk=pk)
+        serializer = StudentStatusSerializer(st_status, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def partial_update(self, request, pk=None):
-        status = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentStatusSerializer(status, data=request.data, partial=True)
+    
+    def partial_update(self, request,pk=None):
+        st_status = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentStatusSerializer(st_status, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, pk=None):
-        status = get_object_or_404(self.queryset,pk=pk)
-        status.delete()
-        return Response({"message": "status deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
 
-class StudentHostel(viewsets.ModelViewSet):
+    def destroy(self, request, pk=None):
+        st_status = get_object_or_404(self.queryset, pk=pk)
+        st_status.delete()
+        return Response({"message" : "student deleted successfuly"})
+
+
+class StudentHostelView(viewsets.ModelViewSet):
     queryset = StudentHostelService.objects.all()
     serializer_class = StudentHostelSerializer
     permission_classes = [IsAuthenticated,]
@@ -253,3 +264,5 @@ class StudentCartInfoView(viewsets.ModelViewSet):
         cartinfo  = get_object_or_404(self.queryset, pk=pk)
         cartinfo.delete()
         return Response({"message": "relation cartinfo is deleted successfully"},status=status.HTTP_204_NO_CONTENT)
+
+

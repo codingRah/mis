@@ -1,7 +1,4 @@
 from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
 from .serializers import UserSerializer, UserTypeSerializer, PermissionSerializer, UserAddressSerializer, UserSerializerWithToken
 from .models import User, UserType, UserAddress
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -12,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.contrib.auth.models import Permission
 from django.contrib.auth.hashers import make_password
-from drf_api_logger import API_LOGGER_SIGNAL
+
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -44,7 +41,7 @@ def user_list_create_view(request):
         password = data["password"]
         re_password = data["re_password"]
         user_type = data["user_type"]
-       
+        print(user_type)
         if User.objects.filter(email=email).exists():
             return Response({"message" : "User with this email already exists "}, status=status.HTTP_400_BAD_REQUEST)
         elif User.objects.filter(username=username).exists():
@@ -98,7 +95,7 @@ def user_update_delete_view(request, pk):
 
 
 @api_view(['GET','POST'])
-# @permission_classes(IsAuthenticated,)
+@permission_classes([IsAuthenticated])
 def usertype_list_create_view(request):
     if request.method == 'GET':
         usertype = UserType.objects.all()
@@ -113,7 +110,7 @@ def usertype_list_create_view(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-# @permission_classes(IsAuthenticated,)
+@permission_classes([IsAuthenticated])
 def usertype_update_delete_view(request, pk):
     if request.method == 'GET':
         usertype = UserType.objects.get(pk=pk)
@@ -182,8 +179,3 @@ def useraddress_update_delete_view(request, pk):
         address.delete()
         return Response({'success': "useraddress deleted successfully"},status=status.HTTP_200_OK)
 
-def listener_one(**kwargs):
-    print(kwargs)
-    
-
-API_LOGGER_SIGNAL.listen += listener_one    

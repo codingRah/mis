@@ -1,5 +1,5 @@
 from django.db import models
-from .departments_models import Department, Semester
+from departments.models import Department, Semester
 from accounts.models import User
 from django.db.models.signals import post_save
 

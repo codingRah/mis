@@ -1,8 +1,6 @@
-
-
 from django.db.models.signals import  post_save
 from django.dispatch import receiver
-from apps.custom_models.departments_models import DepartmentProgramLevel, Semester
+from .models import DepartmentProgramLevel, Semester
 
 
 @receiver(post_save, sender=DepartmentProgramLevel)
