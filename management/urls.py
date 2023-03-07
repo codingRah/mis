@@ -14,5 +14,5 @@ urlpatterns = [
     path('department/', include('departments.urls')),
     # path('instructor/', include('apps.custom_urls.instructor_urls')),
     path('student/', include('students.urls')),
-    # path('status/', include('apps.custom_urls.student_status_urls')),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

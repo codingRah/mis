@@ -1,16 +1,14 @@
 from django.urls import path,include
-from . import views
+from .views import StudentViews, StudentStatusViews, StudentRelationContactViews,StudentHostelViews, StudentCartInfolViews
 from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-
-router.register('student/', views.StudentViews, basename='student'),
-router.register('status/', views.StudentStatusView, basename='status'),
-router.register('hostel/', views.StudentHostelView, basename='hostel'),
-router.register('contact/', views.StudentRelationContactView, basename='contact'),
-router.register('cart/', views.StudentCartInfoView, basename='cart'),
-
+router.register("student", StudentViews, basename="student")
+router.register("status", StudentStatusViews, basename="status")
+router.register("contact", StudentRelationContactViews, basename="contact")
+router.register("hostel", StudentHostelViews, basename="hostel")
+router.register("cartinfo", StudentCartInfolViews, basename="cartinfo")
 
 
 
