@@ -24,16 +24,11 @@ class InstructorViews(viewsets.ModelViewSet):
 
     queryset = models.Staff.objects.all()
     serializer_class = serializers.InstructorSerializer
-    pagination_class = pagination.InstructorPaginator       
-    # permission_classes =  [IsAuthenticated,]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_class = filters.StaffFilter
-    search_fields = ["first_name",'last_name']
-    ordering_fields = ["first_name"]
+    
 
     def list(self, request):
-        instructor = get_object_or_404(self.queryset)
-        serializer = serializers.InstructorSerializer(instructor)
+        instructor = models.Staff.objects.all()
+        serializer = serializers.InstructorSerializer(instructor, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
