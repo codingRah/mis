@@ -1,6 +1,4 @@
-from django.shortcuts import render
 
-# Create your views here.
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -8,10 +6,10 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework import viewsets
-from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter,OrderingFilter
-from rest_framework.views import APIView
+from django.db.models import Q
+from django_filters.utils import translate_validation
+from rest_framework.pagination import PageNumberPagination
+
 from . import models
 from . import serializers
 from . import pagination
@@ -25,11 +23,16 @@ class InstructorViews(viewsets.ModelViewSet):
     queryset = models.Staff.objects.all()
     serializer_class = serializers.InstructorSerializer
     pagination_class = pagination.InstructorPaginator       
-    permission_classes =  [IsAuthenticated,]
+    # permission_classes =  [IsAuthenticated,]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = filters.StaffFilter
     search_fields = ["first_name",'last_name']
     ordering_fields = ["first_name"]
+
+    def list(self, request):
+        instructor = get_object_or_404(self.queryset)
+        serializer = serializers.InstructorSerializer(instructor)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
         instructor = get_object_or_404(self.queryset, pk=pk)
