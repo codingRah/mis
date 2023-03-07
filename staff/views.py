@@ -20,14 +20,7 @@ from . import filters
 
 class InstructorViews(viewsets.ModelViewSet):
 
-    queryset = models.Staff.objects.all()
-    serializer_class = serializers.InstructorSerializer
-    pagination_class = pagination.InstructorPaginator       
-    # permission_classes =  [IsAuthenticated,]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_class = filters.StaffFilter
-    search_fields = ["first_name",'last_name']
-    ordering_fields = ["first_name"]
+    
 
     def list(self, request):
         instructor = get_object_or_404(self.queryset)
