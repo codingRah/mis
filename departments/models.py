@@ -71,20 +71,20 @@ class Semester(models.Model):
         return f"{self.semester_name} for {self.program.level}' program"
 
 
-# class Subject(models.Model):
-#     name = models.CharField(max_length=200)
-#     credit = models.PositiveSmallIntegerField(default=1)
-#     type = models.CharField(max_length=100)
-#     description = models.TextField(null=True, blank=True)
-#     slug  = models.SlugField(max_length=200, unique=True)
-#     code = models.CharField(max_length=200)
-#     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-#     semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+class Subject(models.Model):
+    name = models.CharField(max_length=200)
+    credit = models.PositiveSmallIntegerField(default=1)
+    type = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    slug  = models.SlugField(max_length=200, unique=True)
+    code = models.CharField(max_length=200)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
 
-#     def save(self, *args, **kwargs):
-#         if not self.slug:
-#             self.slug = slugify(random_slug() + "-" + self.name)
-#         super(Subject, self).save(*args,**kwargs)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(random_slug() + "-" + self.name)
+        super(Subject, self).save(*args,**kwargs)
 
-#     def __str__(self):
-#         return self.name
+    def __str__(self):
+        return self.name
