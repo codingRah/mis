@@ -8,6 +8,8 @@
 /departments/migrations
 /management/__pycache__
 /accounts/__pycache__
+/staff/__pycache__
+/staff/migrations
 ### Django ###
 *.log
 *.pot
