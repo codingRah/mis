@@ -83,9 +83,9 @@ class CourseSerializer(serializers.ModelSerializer):
     owner = StaffShortInfoSerializer()
     session = SessionShortInfoSerializer()
     subject = SubjectShortInfoSerializer()
-    modules = serializers.SerializerMethodField()
-    detail = serializers.SerializerMethodField()
-    status  = serializers.SerializerMethodField()
+    # modules = serializers.SerializerMethodField()
+    # detail = serializers.SerializerMethodField()
+    # status  = serializers.SerializerMethodField()
     class Meta:
         model = Course
         fields = [
@@ -99,22 +99,22 @@ class CourseSerializer(serializers.ModelSerializer):
             'description', 
             'created_at', 
             'updated_at', 
-            'modules', 
-            'detail', 
-            'status'
+            # 'modules', 
+            # 'detail', 
+            # 'status'
         ]
 
-    def get_modules(self, obj):
-        modules = obj.module_set.all()
-        return ModuleSerializer(modules, many=True).data
+    # def get_modules(self, obj):
+    #     modules = obj.module_set.all()
+    #     return ModuleSerializer(modules, many=True).data
 
-    def get_detail(self, obj):
-        detail = obj.coursedetail
-        return CourseDetailSerializer(detail, many=False).data
+    # def get_detail(self, obj):
+    #     detail = obj.coursedetail
+    #     return CourseDetailSerializer(detail, many=False).data
 
-    def get_status(self, obj):
-        status = obj.coursestatus
-        return CourseStatusSerializer(status, many=False).data
+    # def get_status(self, obj):
+    #     status = obj.coursestatus
+    #     return CourseStatusSerializer(status, many=False).data
 
 
 

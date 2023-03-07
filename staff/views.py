@@ -22,31 +22,16 @@ class InstructorViews(viewsets.ModelViewSet):
 
     queryset = models.Staff.objects.all()
     serializer_class = serializers.InstructorSerializer
-    
+    pagination_class = pagination.InstructorPaginator       
+    # permission_classes =  [IsAuthenticated,]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = filters.StaffFilter
+    search_fields = ["first_name",'last_name']
+    ordering_fields = ["first_name"]
 
     def list(self, request):
-        search = request.query_params.get("search")
-        order = request.query_params.get("order")
-        paginator = PageNumberPagination()
-        paginator.page_size = 5
-        first_name = ""
-        if search == None:
-            search = ""
-        if order == None:
-            first_name = "first_name"
-        if order == "desc":
-            first_name = "-first_name"
-        staff = models.Staff.objects.distinct().filter(
-            Q(first_name__icontains=search)|
-            Q(department__name__icontains=search)
-            
-        ).order_by(first_name)
-        fitlerset = filters.StaffFilter(request.GET, queryset=staff)
-        if not fitlerset.is_valid():
-            raise translate_validation(fitlerset.errors)
-        pages = paginator.paginate_queryset(fitlerset.qs, request)
-
-        serializer = serializers.InstructorSerializer(pages, many=True)
+        instructor = get_object_or_404(self.queryset)
+        serializer = serializers.InstructorSerializer(instructor)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
