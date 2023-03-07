@@ -2,6 +2,12 @@ from .models import User , UserType, UserAddress
 from rest_framework import serializers
 from django.contrib.auth.models import Permission
 from rest_framework_simplejwt.tokens import RefreshToken
+from staff.models import Staff
+
+class StaffShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Staff
+        fields = ['first_name', 'last_name', 'image']
 
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:

@@ -10,6 +10,8 @@
 /accounts/__pycache__
 /staff/__pycache__
 /staff/migrations
+/course/migrations
+/course/__pycache__
 ### Django ###
 *.log
 *.pot
