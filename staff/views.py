@@ -20,19 +20,32 @@ from . import filters
 
 class InstructorViews(viewsets.ModelViewSet):
 
-    queryset = models.Staff.objects.all()
-    serializer_class = serializers.InstructorSerializer
-    pagination_class = pagination.InstructorPaginator       
-    # permission_classes =  [IsAuthenticated,]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_class = filters.StaffFilter
-    search_fields = ["first_name",'last_name']
-    ordering_fields = ["first_name"]
+    
 
     def list(self, request):
-        instructor = get_object_or_404(self.queryset)
-        serializer = serializers.InstructorSerializer(instructor)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        
+        search = request.query_params.get("search")
+        order = request.query_params.get("order")
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        first_name = ""
+        if search == None:
+            search = ""
+        if order == None:
+            first_name = "first_name"
+        if order == "desc":
+            first_name = "-first_name"
+        student = models.Staff.objects.distinct().filter(
+            Q(first_name__icontains=search)|
+            Q(department__name__icontains=search)
+            
+            ).order_by(first_name)
+        filterset = filters.StaffFilter(request.GET, queryset=student)
+        if not filterset.is_valid():
+            raise translate_validation(filterset.errors)
+        pages = paginator.paginate_queryset(filterset.qs, request)
+        serializer = serializers.InstructorSerializer(pages, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def retrieve(self, request, pk=None):
         instructor = get_object_or_404(self.queryset, pk=pk)
