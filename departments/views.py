@@ -10,7 +10,7 @@ from . import models
 
 # department list create update delete file start
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def department_list_create_view(request):
     data = request.data
     search = request.query_params.get("search")

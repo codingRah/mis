@@ -1,6 +1,4 @@
-from django.shortcuts import render
 
-# Create your views here.
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -8,10 +6,10 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework import viewsets
-from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter,OrderingFilter
-from rest_framework.views import APIView
+from django.db.models import Q
+from django_filters.utils import translate_validation
+from rest_framework.pagination import PageNumberPagination
+
 from . import models
 from . import serializers
 from . import pagination
@@ -27,8 +25,28 @@ class InstructorViews(viewsets.ModelViewSet):
     
 
     def list(self, request):
-        instructor = models.Staff.objects.all()
-        serializer = serializers.InstructorSerializer(instructor, many=True)
+        search = request.query_params.get("search")
+        order = request.query_params.get("order")
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        first_name = ""
+        if search == None:
+            search = ""
+        if order == None:
+            first_name = "first_name"
+        if order == "desc":
+            first_name = "-first_name"
+        staff = models.Staff.objects.distinct().filter(
+            Q(first_name__icontains=search)|
+            Q(department__name__icontains=search)
+            
+        ).order_by(first_name)
+        fitlerset = filters.StaffFilter(request.GET, queryset=staff)
+        if not fitlerset.is_valid():
+            raise translate_validation(fitlerset.errors)
+        pages = paginator.paginate_queryset(fitlerset.qs, request)
+
+        serializer = serializers.InstructorSerializer(pages, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):

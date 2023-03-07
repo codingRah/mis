@@ -9,8 +9,6 @@ from .models import Student, StudentHostelService, StudentNationlityCartInfo, St
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from .filters import StudentFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
 from django_filters.utils import translate_validation
 
 
