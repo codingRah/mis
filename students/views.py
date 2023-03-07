@@ -24,6 +24,7 @@ class StudentViews(viewsets.ModelViewSet):
     filterset_class = StudentFilter
     search_fields = ["kankor_id","first_name","last_name"]
     ordering_fields = ["first_name"]
+    permission_classes = (IsAuthenticated,)
 
     # def list(self, request):
     #     student = Student.objects.all()
