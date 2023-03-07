@@ -23,13 +23,13 @@ class DepartmentChiefSerilizer(serializers.ModelSerializer):
 
 class DepartmentSerializer(serializers.ModelSerializer):
     dep_chief = serializers.SerializerMethodField(read_only=True)
-    instructors = serializers.SerializerMethodField(read_only=True)
+    # instructors = serializers.SerializerMethodField(read_only=True)
     total_students = serializers.SerializerMethodField(read_only=True)
     total_active_students = serializers.SerializerMethodField(read_only=True)
     total_new_students = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Department
-        fields = ['id','name','description','slug','code','status','created_at','dep_chief','instructors','total_students','total_active_students','total_new_students']
+        fields = ['id','name','description','slug','code','status','created_at','dep_chief','total_students','total_active_students','total_new_students']
     
     def get_dep_chief(self,obj):
         data = obj.departmentchief_set.all()

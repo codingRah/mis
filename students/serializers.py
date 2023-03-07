@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Student, StudentStatus, StudentNationlityCartInfo, StudentHostelService, StudentRelationContact
 
 
-class StudentsSerializer(serializers.ModelSerializer):
+class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id','user','kankor_id','first_name','last_name','father_name','grand_father_name','school','score','department', 'gender','semester','image']

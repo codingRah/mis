@@ -1,11 +1,10 @@
-from rest_framework import viewsets
 from rest_framework import status
-from rest_framework.decorators import permission_classes,api_view
+from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StudentsSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
+from .serializers import StudentSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
 from .models import Student, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import StudentFilter
@@ -13,77 +12,75 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .pagination import StudentPagination
 from rest_framework import filters
 
+
 class StudentViews(viewsets.ModelViewSet):
+
+    """view for students"""
+
+    serializer_class = StudentSerializer
     queryset = Student.objects.all()
-    serializer_class = StudentsSerializer
-    permission_classes =  [IsAuthenticated,]
     pagination_class = StudentPagination
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = StudentFilter
     search_fields = ["kankor_id","first_name","last_name"]
     ordering_fields = ["first_name"]
-    
-    def list(self, request):
-        queryset = Student.objects.all()
-        serializer = StudentsSerializer(queryset,many=True)
-        return Response(serializer.data)
 
+    # def list(self, request):
+    #     student = Student.objects.all()
+    #     serializer = StudentSerializer(student, many=True)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    
     def retrieve(self, request, pk=None):
         student = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentsSerializer(student)
+        serializer = StudentSerializer(student)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
-        serializer = StudentsSerializer(data=request.data)
+        serializer = StudentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def update(self, request, pk=None):
-        student = get_object_or_404(self.queryset,pk=pk)
-        serializer = StudentsSerializer(student, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def partial_update(self, request,pk=None):
         student = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentsSerializer(student, data=request.data, partial=True)
+        serializer = StudentSerializer(student, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+    def partial_update(self, request, pk=None):
+        student = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentSerializer(student, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         student = get_object_or_404(self.queryset, pk=pk)
         student.delete()
-        return Response({"message" : "student deleted successfuly"})
-# @api_view(['GET'])
-# def statuslist(request):
-#     st_status = StudentStatus.objects.all()
-#     serializer = StudentStatusSerializer(st_status, many=True)
-#     return Response(serializer.data)
+        return Response({"message": "Student deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
 
-class StudentStatusView(viewsets.ModelViewSet):
-    queryset = StudentStatus.objects.all()
+
+class StudentStatusViews(viewsets.ModelViewSet):
+
+    """view for students Status"""
     serializer_class = StudentStatusSerializer
-    
-    
+    queryset = StudentStatus.objects.all()
+    permission_classes = (IsAuthenticated, )
+
     def list(self, request):
-        queryset = StudentStatus.objects.all()
-        serializer = StudentStatusSerializer(queryset,many=True)
-        return Response(serializer.data)
-
+        student_status = StudentStatus.objects.all()
+        serializer = StudentStatusSerializer(student_status, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
     def retrieve(self, request, pk=None):
-
-        st_status = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentStatusSerializer(st_status)
+        student_status = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentStatusSerializer(student_status)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
@@ -91,178 +88,171 @@ class StudentStatusView(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def update(self, request, pk=None):
-        st_status = get_object_or_404(self.queryset,pk=pk)
-        serializer = StudentStatusSerializer(st_status, data=request.data)
+        student_status = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentStatusSerializer(student_status, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def partial_update(self, request,pk=None):
-        st_status = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentStatusSerializer(st_status, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-    def destroy(self, request, pk=None):
-        st_status = get_object_or_404(self.queryset, pk=pk)
-        st_status.delete()
-        return Response({"message" : "student deleted successfuly"})
-
-
-class StudentHostelView(viewsets.ModelViewSet):
-    queryset = StudentHostelService.objects.all()
-    serializer_class = StudentHostelSerializer
-    permission_classes = [IsAuthenticated,]
-
-
-    def list(self , request):
-        serializer = StudentHostelSerializer(self.queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def retrieve(self, request, pk=None):
-        hostel = get_object_or_404(self.queryset, many=True)
-        serializer = StudentHostelSerializer(hostel)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-    def create(self, request):
-        serializer = StudentHostelSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def update(self, request, pk=None):
-        hostel = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentHostelSerializer(hostel, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
-    
 
     def partial_update(self, request, pk=None):
-        hostel = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentHostelSerializer(hostel, data=request.data, partial=True)
+        student_status = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentStatusSerializer(student_status, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def destroy(self, request, pk=None):
-        hostel = get_object_or_404(self.queryset, pk=pk)
-        hostel.delete()
-        return Response({"message":"hostel deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        student_status = get_object_or_404(self.queryset, pk=pk)
+        student_status.delete()
+        return Response({"message": "student status deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
 
 
+class StudentRelationContactViews(viewsets.ModelViewSet):
 
-class StudentRelationContactView(viewsets.ModelViewSet):
-    queryset = StudentRelationContact.objects.all()
+    """view for students contact"""
     serializer_class = StudentRelationContactSerializer
-    permission_classes = [IsAuthenticated,]
+    queryset = StudentRelationContact.objects.all()
+    permission_classes = (IsAuthenticated, )
 
-    def list(self,request):
-        serializer = StudentRelationContactSerializer(self.queryset, many=True)
+    def list(self, request):
+        student_contact = StudentRelationContact.objects.all()
+        serializer = StudentRelationContactSerializer(student_contact, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def retrieve(self, request, pk=None):
-        contact = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentRelationContactSerializer(contact)
+        student_contact = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentRelationContactSerializer(student_contact)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
         serializer = StudentRelationContactSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, {"message" : "contact is not created"})
-        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     def update(self, request, pk=None):
-        contact  = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentRelationContactSerializer(contact , data=request.data)
+        student_contact = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentRelationContactSerializer(student_contact, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, {"message" : "contact is not updated"})
-        
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        contact  = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentRelationContactSerializer(contact , data=request.data,partial=True)
+        student_contact = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentRelationContactSerializer(student_contact, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, {"message" : "contact is not updated"})
-        
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def destroy(self, request, pk=None):
-        contact  = get_object_or_404(self.queryset, pk=pk)
-        contact.delete()
-        return Response({"message": "relation contact is deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    
+        student_contact = get_object_or_404(self.queryset, pk=pk)
+        student_contact.delete()
+        return Response({"message": "student contact deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
 
 
-class StudentCartInfoView(viewsets.ModelViewSet):
-    queryset = StudentNationlityCartInfo.objects.all()
-    serializer_class = StudentsCartSerializer
-    permission_classes = [IsAuthenticated,]
+class StudentHostelViews(viewsets.ModelViewSet):
 
-    def list(self,request):
-        serializer = StudentsCartSerializer(self.queryset, many=True)
+    """view for students hostel"""
+    serializer_class = StudentHostelSerializer
+    queryset = StudentHostelService.objects.all()
+    permission_classes = (IsAuthenticated, )
+
+    def list(self, request):
+        student_hostel = StudentHostelService.objects.all()
+        serializer = StudentHostelSerializer(student_hostel, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def retrieve(self, request, pk=None):
-        cartinfo = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentsCartSerializer(cartinfo)
+        student_hostel = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentHostelSerializer(student_hostel)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
+        serializer = StudentHostelSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request, pk=None):
+        student_hostel = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentHostelSerializer(student_hostel, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        student_hostel = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentHostelSerializer(student_hostel, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        student_hostel = get_object_or_404(self.queryset, pk=pk)
+        student_hostel.delete()
+        return Response({"message": "student hostel deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class StudentCartInfolViews(viewsets.ModelViewSet):
+
+    """view for students Info"""
+    serializer_class = StudentsCartSerializer
+    queryset = StudentNationlityCartInfo.objects.all()
+    permission_classes = (IsAuthenticated, )
+
+    def list(self, request):
+        student_cart = StudentNationlityCartInfo.objects.all()
+        serializer = StudentsCartSerializer(student_cart, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def retrieve(self, request, pk=None):
+        student_cart = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentsCartSerializer(student_cart)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
         serializer = StudentsCartSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, {"message" : "cartinfo is not created"})
-        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     def update(self, request, pk=None):
-        cartinfo  = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentsCartSerializer(cartinfo , data=request.data)
+        student_cart = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentsCartSerializer(student_cart, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, {"message" : "cartinfo is not updated"})
-        
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        cartinfo  = get_object_or_404(self.queryset, pk=pk)
-        serializer = StudentsCartSerializer(cartinfo , data=request.data,partial=True)
+        student_cart = get_object_or_404(self.queryset, pk=pk)
+        serializer = StudentsCartSerializer(student_cart, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, {"message" : "cartinfo is not updated"})
-        
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def destroy(self, request, pk=None):
-        cartinfo  = get_object_or_404(self.queryset, pk=pk)
-        cartinfo.delete()
-        return Response({"message": "relation cartinfo is deleted successfully"},status=status.HTTP_204_NO_CONTENT)
-
-
+        student_cart = get_object_or_404(self.queryset, pk=pk)
+        student_cart.delete()
+        return Response({"message": "student cart info deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
