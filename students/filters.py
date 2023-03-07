@@ -11,6 +11,7 @@ class StudentFilter(FilterSet):
             'gender':['exact'], 
             # 'status':['exact'],
             'semester':['exact'],
+            'school':['exact'],
 
         }
               

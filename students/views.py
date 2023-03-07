@@ -6,11 +6,12 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .serializers import StudentSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
 from .models import Student, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
-from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
 from .filters import StudentFilter
-from rest_framework.filters import SearchFilter, OrderingFilter
-from .pagination import StudentPagination
-from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
+from django_filters.utils import translate_validation
 
 
 class StudentViews(viewsets.ModelViewSet):
@@ -19,17 +20,37 @@ class StudentViews(viewsets.ModelViewSet):
 
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
-    pagination_class = StudentPagination
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_class = StudentFilter
-    search_fields = ["kankor_id","first_name","last_name"]
-    ordering_fields = ["first_name"]
-    permission_classes = (IsAuthenticated,)
+    # pagination_class = StudentPagination
+    # filter_backends = [DjangoFilterBackend, SearchFilter]
+    # filterset_class = StudentFilter
+    # search_fields = ["kankor_id","first_name","last_name"]
+    # ordering_fields = ["first_name"]
+    # # permission_classes = (IsAuthenticated,)
 
-    # def list(self, request):
-    #     student = Student.objects.all()
-    #     serializer = StudentSerializer(student, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    def list(self, request):
+       
+        search = request.query_params.get("search")
+        order = request.query_params.get("order")
+        paginator = PageNumberPagination()
+        paginator.page_size = 3
+        first_name = ""
+        if search == None:
+            search = ""
+        if order == None:
+            first_name = "first_name"
+        if order == "desc":
+            first_name = "-first_name"
+        student = Student.objects.filter(
+            Q(first_name__icontains=search)|
+            Q(kankor_id__icontains=search)|
+            Q(department__name__icontains=search)
+            ).distinct()
+        filterset = StudentFilter(request.GET, queryset=Student.objects.all())
+        if not filterset.is_valid():
+            raise translate_validation(filterset.errors)
+        pages = paginator.paginate_queryset(filterset.qs, request)
+        serializer = StudentSerializer(pages, many=True)
+        return paginator.get_paginated_response(serializer.data)
     
     def retrieve(self, request, pk=None):
         student = get_object_or_404(self.queryset, pk=pk)
