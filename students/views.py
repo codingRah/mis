@@ -16,8 +16,9 @@ class StudentViews(viewsets.ModelViewSet):
 
     """view for students"""
 
-    serializer_class = StudentSerializer
     queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = (IsAuthenticated,)
    
 
     def list(self, request):

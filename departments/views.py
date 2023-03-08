@@ -10,7 +10,7 @@ from . import models
 
 # department list create update delete file start
 @api_view(['GET', 'POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def department_list_create_view(request):
     data = request.data
     search = request.query_params.get("search")
@@ -33,8 +33,6 @@ def department_list_create_view(request):
         description = data['description']
         code = data['code']
         created_at = data['created_at']
-
-        print(created_at)
 
         department = models.Department.objects.create(
             name=name, 
@@ -156,7 +154,7 @@ def department_programlevel_update_delete_view(request, pk):
 
 # start of semester
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def semester_list_create_view(request):
     if request.method == 'GET':
         semester = models.Semester.objects.all()
@@ -192,6 +190,82 @@ def semester_update_delete_view(request, pk):
         return Response({'message': 'Successfully semester deleted!!'}, status=status.HTTP_200_OK)
  
 
-      
+
+@api_view(['GET', 'POST'])
+# @permission_classes([IsAuthenticated])
+def subject_list_create_view(request):
+    data = request.data
+    search = request.query_params.get("search")
+    order = request.query_params.get("order")
+    name = ""
+    if search == None:
+        search = ""
+    if order == None:
+        order == "asc"
+    if order == "asc":
+        name = "name"
+    else:
+        name = "-name"
+    if request.method == 'GET':
+        subject = models.Subject.objects.filter(name__icontains=search).order_by(name)
+        serializer = serializers.SubjectSerializer(subject, many=True)
+        return Response(serializer.data)
+    
+    if request.method == 'POST':
+        name = data['name']
+        credit = data['credit']
+        subject_type = data['subject_type']
+        description = data['description']
+        code = data['code']
+        department = models.Department.objects.get(id=data['department']) 
+        semester = models.Semester.objects.get(id=data['semester'])
+
+        subject = models.Subject.objects.create(
+            name=name, 
+            credit = credit,
+            subject_type = subject_type,
+            description=description, 
+            code=code, 
+            department=department,
+            semester =semester
+        )
+        serializer = serializers.SubjectSerializer(subject, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def subject_update_delete_view(request, slug):
+    data = request.data
+    if request.method == "GET":
+        subject = models.Subject.objects.get(slug=slug)
+        serializer = serializers.SubjectSerializer(subject)
+        return Response(serializer.data)
+
+    if request.method == 'PUT':
+        name = data['name']
+        credit = data['credit']
+        subject_type = data['subject_type']
+        description = data['description']
+        code = data['code']
+        department = data['department']
+        semester = data['sermester']
+
+        subject = models.Subject.objects.get(slug=slug)
+        subject.name = name
+        subject.credit=credit
+        subject.subject_type=subject_type
+        subject.description = description
+        subject.code = code
+        subject.department = department
+        subject.semester = semester
+        subject.save()
+        
+        serializer = serializers.SubjectSerializer(subject, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method == 'DELETE':        
+        subject = models.Subject.objects.get(slug=slug)
+        subject.delete()
+        return Response({'message': 'Successfully subject deleted!!'}, status=status.HTTP_200_OK)
+
 
  

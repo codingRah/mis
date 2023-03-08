@@ -64,7 +64,7 @@ def user_list_create_view(request):
                 password=password
             )
             for t in user_type:
-                u_type = UserType.objects.get(id=t)
+                u_type = UserType.objects.get(id=t['value'])
                 user.user_type.add(u_type)
                 user.save()
             serializer = UserSerializerWithToken(user, many=False)

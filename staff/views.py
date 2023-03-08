@@ -19,11 +19,13 @@ from . import filters
 # staff list create update delete file start
 
 class InstructorViews(viewsets.ModelViewSet):
-
+    queryset = models.Staff.objects.all()
+    serializer_class = serializers.InstructorSerializer
+    permission_classes= (IsAuthenticated,)
     
 
     def list(self, request):
-        
+    
         search = request.query_params.get("search")
         order = request.query_params.get("order")
         paginator = PageNumberPagination()
