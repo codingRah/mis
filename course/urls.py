@@ -8,6 +8,7 @@ router.register("course", views.CourseViews, basename="course")
 router.register("status", views.CourseStatusViews, basename="status")
 router.register("detail", views.CourseDetailViews, basename="detail")
 router.register("module", views.CourseModuleViews, basename="module")
+router.register("contenttype", views.CourseContentTypeViews, basename="contenttype")
 
 # router.register("status", StudentStatusViews, basename="status")
 # router.register("contact", StudentRelationContactViews, basename="contact")

@@ -228,5 +228,50 @@ class CourseModuleViews(viewsets.ModelViewSet):
         return Response({"message": "Course Module deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         
         
-                            
+
+class CourseContentTypeViews(viewsets.ModelViewSet):
+    queryset = models.ContentType.objects.all()
+    serializer_class = serializers.ContentTypeSerializer
+    # permission_classes = [IsAuthenticated,]
+    
+    def list(self, request):
+        serializer = serializers.ContentTypeSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def retrieve(self, request, pk=None):
+        contenttype = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ContentTypeSerializer(contenttype)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
+        serializer = serializers.ContentTypeSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request, pk=None):
+        contenttype = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ContentTypeSerializer(contenttype, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def partial_update(self, request, pk=None):
+        contenttype = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ContentTypeSerializer(contenttype, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def destroy(self, request, pk=None):
+        contenttype = get_object_or_404(self.queryset, pk=pk)
+        contenttype.delete()
+        return Response({"message": "Course Module deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+                                    
         
