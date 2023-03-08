@@ -92,7 +92,7 @@ class Module(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.course.title}'s module "
+        return f"{self.course}'s module "
 
 
 class Content(models.Model):
@@ -106,7 +106,9 @@ class Content(models.Model):
         return self.title
 
 class ContentType(models.Model):
-    content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True)
+
+    content = models.ForeignKey(Content, on_delete=models.CASCADE,null=True, blank=True)
+
     url = models.URLField(max_length=200, null=True, blank=True)
     file = models.FileField(upload_to="course/content", null=True, blank=True)
     image = models.ImageField(upload_to='course/content', null=True, blank=True)
