@@ -365,6 +365,6 @@ class CourseContentTypeViews(viewsets.ModelViewSet):
     def destroy(self, request, pk=None):
         contenttype = get_object_or_404(self.queryset, pk=pk)
         contenttype.delete()
-        return Response({"message": "Course Module deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Course content type deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
                                     
         

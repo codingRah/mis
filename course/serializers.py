@@ -23,7 +23,7 @@ class ContentTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContentType
         fields = [
-            'id', 'url', 'file', 'image'
+            'id', 'url', 'file', 'image','content'
         ]
 
     
