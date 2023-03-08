@@ -247,8 +247,8 @@ def subject_update_delete_view(request, slug):
         subject_type = data['subject_type']
         description = data['description']
         code = data['code']
-        department = data['department']
-        semester = data['sermester']
+        department = models.Department.objects.get(id=data['department']) 
+        semester = models.Semester.objects.get(id=data['semester'])
 
         subject = models.Subject.objects.get(slug=slug)
         subject.name = name
