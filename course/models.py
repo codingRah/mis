@@ -98,7 +98,7 @@ class Module(models.Model):
 class Content(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     title = models.CharField(max_length=500)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
 
@@ -106,7 +106,9 @@ class Content(models.Model):
         return self.title
 
 class ContentType(models.Model):
+
     content = models.ForeignKey(Content, on_delete=models.CASCADE,null=True, blank=True)
+
     url = models.URLField(max_length=200, null=True, blank=True)
     file = models.FileField(upload_to="course/content", null=True, blank=True)
     image = models.ImageField(upload_to='course/content', null=True, blank=True)
