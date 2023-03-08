@@ -8,16 +8,16 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseDetail
         fields = [
-            'image', 'color'
+            "id",'image', 'color'
         ]
 
 class CourseStatusSerializer(serializers.ModelSerializer):
+    # course = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = CourseStatus
         fields = [
-            'status'
+            'id', 'status', 'course'
         ]
-
 
 class ContentTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,16 +76,16 @@ class SessionShortInfoSerializer(serializers.ModelSerializer):
 class SubjectShortInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ['name', 'credit']
+        fields = ['id','name', 'credit']
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    owner = StaffShortInfoSerializer()
-    session = SessionShortInfoSerializer()
-    subject = SubjectShortInfoSerializer()
+    owner = StaffShortInfoSerializer(read_only=True)
+    session = SessionShortInfoSerializer(read_only=True)
+    subject = SubjectShortInfoSerializer(read_only=True)
     # modules = serializers.SerializerMethodField()
     # detail = serializers.SerializerMethodField()
-    # status  = serializers.SerializerMethodField()
+    # status  = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Course
         fields = [
@@ -103,6 +103,10 @@ class CourseSerializer(serializers.ModelSerializer):
             # 'detail', 
             # 'status'
         ]
+        
+    def get_owner(self, obj):
+        data = obj.owner_set.all()
+        return StaffShortInfoSerializer(data, many=True).data
 
     # def get_modules(self, obj):
     #     modules = obj.module_set.all()

@@ -19,13 +19,13 @@ class CourseViews(viewsets.ModelViewSet):
 
     queryset = models.Course.objects.all()
     serializer_class = serializers.CourseSerializer
-    permission_classes= [IsAuthenticated,]
+    # permission_classes= [IsAuthenticated,]
     
     def list(self, request):
         search = request.query_params.get('search')
         order = request.query_params.get('order')
         paginator = PageNumberPagination()
-        paginator.page_size=2
+        paginator.page_size=5
         title=''
         if search==None:
             search=''
@@ -82,3 +82,52 @@ class CourseViews(viewsets.ModelViewSet):
         course = get_object_or_404(self.queryset, pk=pk)
         course.delete()
         return Response({"message": "course deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class CourseStatusViews(viewsets.ModelViewSet):
+
+    queryset = models.CourseStatus.objects.all()
+    serializer_class = serializers.CourseStatusSerializer
+    # permission_classes= [IsAuthenticated,]
+    
+    def list(self, request):
+        serializer = serializers.CourseStatusSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        course_status = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseStatusSerializer(course_status)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        serializer = serializers.CourseStatusSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request,pk=None):
+        course_status = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseStatusSerializer(course_status, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        course_status = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseStatusSerializer(course_status, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def destroy(self, request, pk=None):
+        course_status = get_object_or_404(self.queryset, pk=pk)
+        course_status.delete()
+        return Response({"message": "status deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
