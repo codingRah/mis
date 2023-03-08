@@ -131,3 +131,54 @@ class CourseStatusViews(viewsets.ModelViewSet):
         course_status.delete()
         return Response({"message": "status deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
+
+
+
+class CourseDetailViews(viewsets.ModelViewSet):
+
+    queryset = models.CourseDetail.objects.all()
+    serializer_class = serializers.CourseDetailSerializer
+    # permission_classes= [IsAuthenticated,]
+    
+    def list(self, request):
+        serializer = serializers.CourseDetailSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        detail = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseDetailSerializer(detail)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        serializer = serializers.CourseDetailSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request,pk=None):
+        detail = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseDetailSerializer(detail, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        detail = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseDetailSerializer(detail, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def destroy(self, request, pk=None):
+        detail = get_object_or_404(self.queryset, pk=pk)
+        detail.delete()
+        return Response({"message": "course detail deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
