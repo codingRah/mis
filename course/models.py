@@ -32,7 +32,7 @@ class Session(models.Model):
 class Course(models.Model):
     owner = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
     session = models.ForeignKey(Session, on_delete=models.SET_NULL, null=True)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
     students  = models.ManyToManyField(Student, related_name="join_course", blank=True)
     code = models.CharField(max_length=100, unique=True)
     title = models.CharField(max_length=200)
