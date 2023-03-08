@@ -133,7 +133,6 @@ class CourseStatusViews(viewsets.ModelViewSet):
 
 
 
-
 class CourseDetailViews(viewsets.ModelViewSet):
 
     queryset = models.CourseDetail.objects.all()
@@ -250,6 +249,7 @@ class CourseContentTypeViews(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
     def update(self, request, pk=None):
         contenttype = get_object_or_404(self.queryset, pk=pk)
