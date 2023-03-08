@@ -8,3 +8,4 @@ admin.site.register(DepartmentChief)
 admin.site.register(DepartmentProgramLevel)
 admin.site.register(Semester)
 admin.site.register(Subject)
+

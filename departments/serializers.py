@@ -5,6 +5,7 @@ from accounts.serializers import UserSerializer
 from accounts.models import User
 from students.serializers import StudentSerializer, StudentStatusSerializer
 from staff.serializers import InstructorSerializer
+from .models import Subject
 
 class UserShortInforSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,7 +32,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
     total_new_students = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Department
-        fields = ['id','name','description','slug','code','status','created_at','instructors','dep_chief','total_students','total_active_students','total_new_students']
+        fields = ['id','name','description','slug','code','status','created_at','instructors','dep_chief','total_students']
     
     def get_dep_chief(self,obj):
         data = obj.departmentchief_set.all()
@@ -45,11 +46,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
         data = obj.student_set.all()
         return StudentSerializer(data, many=True).data
 
-    def get_total_active_students(self,obj):
-        pass
-
-    def get_total_new_students(self, obj):
-        pass
+    
 
 class DepartmentProgramLevelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,4 +59,8 @@ class SemesterSerializer(serializers.ModelSerializer):
         model = Semester
         fields = ['id','program','semester_number','semester_name']
 
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ['id','name','credit','subject_type','description','code','department','semester']
 

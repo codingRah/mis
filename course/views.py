@@ -10,6 +10,7 @@ from rest_framework.pagination import PageNumberPagination
 from . import models
 from . import serializers
 from . import filters
+from departments.models import Subject
 
 
 # staff list create update delete file start
@@ -81,4 +82,3 @@ class CourseViews(viewsets.ModelViewSet):
         course = get_object_or_404(self.queryset, pk=pk)
         course.delete()
         return Response({"message": "course deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-
