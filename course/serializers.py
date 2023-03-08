@@ -80,6 +80,11 @@ class SubjectShortInfoSerializer(serializers.ModelSerializer):
         fields = ['id','name', 'credit']
 
 
+class CourseEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseEvent
+        fields = ['id','course','title','description','start_at','end_at']
+
 class CourseSerializer(serializers.ModelSerializer):
     owner = StaffShortInfoSerializer(read_only=True)
     session = SessionShortInfoSerializer(read_only=True)

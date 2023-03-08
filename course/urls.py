@@ -10,7 +10,7 @@ router.register("detail", views.CourseDetailViews, basename="detail")
 router.register("module", views.CourseModuleViews, basename="module")
 router.register("contenttype", views.CourseContentTypeViews, basename="contenttype")
 
-# router.register("status", StudentStatusViews, basename="status")
+router.register("event", views.CourseEventViews, basename="event")
 # router.register("contact", StudentRelationContactViews, basename="contact")
 # router.register("hostel", StudentHostelViews, basename="hostel")
 # router.register("cartinfo", StudentCartInfolViews, basename="cartinfo")
