@@ -132,6 +132,25 @@ class CourseStatusViews(viewsets.ModelViewSet):
         return Response({"message": "status deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
+
+class CourseDetailViews(viewsets.ModelViewSet):
+
+    queryset = models.CourseDetail.objects.all()
+    serializer_class = serializers.CourseDetailSerializer
+    # permission_classes= [IsAuthenticated,]
+    
+    def list(self, request):
+        serializer = serializers.CourseDetailSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        detail = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseDetailSerializer(detail)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        serializer = serializers.CourseDetailSerializer(data=request.data)
+
 class CourseEventViews(viewsets.ModelViewSet):
     queryset = models.CourseEvent.objects.all()
     serializer_class = serializers.CourseEventSerializer
@@ -149,29 +168,68 @@ class CourseEventViews(viewsets.ModelViewSet):
         
     def create(self , request):
         serializer = serializers.CourseEventSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+    def update(self, request,pk=None):
+        detail = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseDetailSerializer(detail, data=request.data)
+
     def update(self,requset, pk=None):
         event = get_object_or_404(self.queryset,pk=pk)
         serializer = serializers.CourseEventSerializer(event, data=requset.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def partial_update(self, request, pk=None):
+        detail = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.CourseDetailSerializer(detail, data=request.data, partial=True)
+
     
     def parial_padate(self, request, pk=None):
         event = get_object_or_404(self.queryset,pk=pk)
         serializer = serializers.CourseEventSerializer(event,data=request.data, parial=True)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def destroy(self, request, pk=None):
+        detail = get_object_or_404(self.queryset, pk=pk)
+        detail.delete()
+        return Response({"message": "course detail deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class CourseModuleViews(viewsets.ModelViewSet):
+    queryset = models.Module.objects.all()
+    serializer_class = serializers.ModuleSerializer
+    # permission_classes = [IsAuthenticated,]
+    
+    def list(self, request):
+        serializer = serializers.ModuleSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def retrieve(self, request, pk=None):
+        module = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ModuleSerializer(module)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
+        serializer = serializers.ModuleSerializer(data = request.data)
+=======
     
     def destroy(self,request, pk=None):
         event = get_object_or_404(self.queryset,pk=pk)
@@ -196,39 +254,99 @@ class CourseContentViews(viewsets.ModelViewSet):
         
     def create(self , request):
         serializer = serializers.ContentSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+    def update(self, request, pk=None):
+        module = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ModuleSerializer(module, data=request.data)
+
     def update(self,requset, pk=None):
         content = get_object_or_404(self.queryset,pk=pk)
         serializer = serializers.ContentSerializer(content, data=requset.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+    def partial_update(self, request, pk=None):
+        module = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ModuleSerializer(module, data=request.data, partial=True)
+
     def parial_padate(self, request, pk=None):
         content = get_object_or_404(self.queryset,pk=pk)
         serializer = serializers.ContentSerializer(content,data=request.data, parial=True)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        module = get_object_or_404(self.queryset, pk=pk)
+        module.delete()
+        return Response({"message": "Course Module deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        
+        
+
+class CourseContentTypeViews(viewsets.ModelViewSet):
+    queryset = models.ContentType.objects.all()
+    serializer_class = serializers.ContentTypeSerializer
+    # permission_classes = [IsAuthenticated,]
+    
+    def list(self, request):
+        serializer = serializers.ContentTypeSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def retrieve(self, request, pk=None):
+        contenttype = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ContentTypeSerializer(contenttype)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
+        serializer = serializers.ContentTypeSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request, pk=None):
+        contenttype = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ContentTypeSerializer(contenttype, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def partial_update(self, request, pk=None):
+        contenttype = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.ContentTypeSerializer(contenttype, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def destroy(self, request, pk=None):
+        contenttype = get_object_or_404(self.queryset, pk=pk)
+        contenttype.delete()
+        return Response({"message": "Course Module deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+                              
     
     def destroy(self,request, pk=None):
         content = get_object_or_404(self.queryset,pk=pk)
         content.delete()
         return Response({"message": "course content deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
-    
-
-
-            
-    
-
-            
+   

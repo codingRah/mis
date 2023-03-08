@@ -8,7 +8,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseDetail
         fields = [
-            "id",'image', 'color'
+            "id",'image', 'color', 'course'
         ]
 
 class CourseStatusSerializer(serializers.ModelSerializer):
@@ -55,7 +55,8 @@ class ModuleSerializer(serializers.ModelSerializer):
             'description', 
             'created_at', 
             'updated_at', 
-            "contents"
+            "contents",
+            'course'
         ]
 
     def get_contents(self, obj):
