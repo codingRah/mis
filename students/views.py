@@ -26,7 +26,7 @@ class StudentViews(viewsets.ModelViewSet):
         search = request.query_params.get("search")
         order = request.query_params.get("order")
         paginator = PageNumberPagination()
-        paginator.page_size = 5
+        paginator.page_size = 2
         first_name = ""
         if search == None:
             search = ""
