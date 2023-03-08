@@ -367,4 +367,51 @@ class CourseContentTypeViews(viewsets.ModelViewSet):
         contenttype.delete()
         return Response({"message": "Course content type deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
                                     
+
+class CourseSessionViews(viewsets.ModelViewSet):
+    queryset = models.Session.objects.all()
+    serializer_class = serializers.SessionSerializer
+    # permission_classes = [IsAuthenticated,]
+    
+    def list(self, request):
+        session = models.Session.objects.all()
+        serializer = serializers.SessionSerializer(session, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def retrieve(self, request, pk=None):
+        session = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.SessionSerializer(session)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request):
+        serializer = serializers.SessionSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+    def update(self, request, pk=None):
+        session = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.SessionSerializer(session, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def partial_update(self, request, pk=None):
+        session = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.SessionSerializer(session, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+    def destroy(self, request, pk=None):
+        session = get_object_or_404(self.queryset, pk=pk)
+        session.delete()
+        return Response({"message": "Course Session deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+                                                                        
