@@ -84,7 +84,7 @@ class CourseEvent(models.Model):
 
 
 class Module(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     week = models.PositiveSmallIntegerField(default=1)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
