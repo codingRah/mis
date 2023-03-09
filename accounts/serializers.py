@@ -24,8 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserType
-        fields = ['name', 'description']
-    
+        fields = ['id','name', 'description']
 
 class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:

@@ -9,43 +9,45 @@ from .models import Student, StudentHostelService, StudentNationlityCartInfo, St
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from .filters import StudentFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
 from django_filters.utils import translate_validation
+import ast
 
 
 class StudentViews(viewsets.ModelViewSet):
 
     """view for students"""
 
-    serializer_class = StudentSerializer
     queryset = Student.objects.all()
-    # pagination_class = StudentPagination
-    # filter_backends = [DjangoFilterBackend, SearchFilter]
-    # filterset_class = StudentFilter
-    # search_fields = ["kankor_id","first_name","last_name"]
-    # ordering_fields = ["first_name"]
-    # # permission_classes = (IsAuthenticated,)
+    serializer_class = StudentSerializer
+    permission_classes = (IsAuthenticated,)
+   
 
     def list(self, request):
-       
-        search = request.query_params.get("search")
-        order = request.query_params.get("order")
         paginator = PageNumberPagination()
-        paginator.page_size = 3
-        first_name = ""
-        if search == None:
-            search = ""
-        if order == None:
-            first_name = "first_name"
-        if order == "desc":
-            first_name = "-first_name"
-        student = Student.objects.filter(
-            Q(first_name__icontains=search)|
-            Q(kankor_id__icontains=search)|
-            Q(department__name__icontains=search)
-            ).distinct()
-        filterset = StudentFilter(request.GET, queryset=Student.objects.all())
+
+        paginator.page_size = 5
+        query = request.query_params.get("query")
+        department = request.query_params.get("department")
+        sort = request.query_params.get("sort")
+        sort = ast.literal_eval(sort)
+        sort_result = ""
+        if query == None:
+            query = ""
+        
+        if sort['order'] == "asc":
+            sort_result = sort['key']
+        if sort['order'] == 'desc':
+            sort_result = sort['key']
+        
+        student = Student.objects.distinct().filter(
+            Q(first_name__icontains=query)|
+            Q(kankor_id__icontains=query)|
+            Q(gender__icontains=query)
+        )
+        student = student.filter(
+           Q(department__id=department) 
+        )
+        filterset = StudentFilter(request.GET, queryset=student)
         if not filterset.is_valid():
             raise translate_validation(filterset.errors)
         pages = paginator.paginate_queryset(filterset.qs, request)

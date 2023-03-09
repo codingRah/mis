@@ -32,7 +32,7 @@ class Session(models.Model):
 class Course(models.Model):
     owner = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
     session = models.ForeignKey(Session, on_delete=models.SET_NULL, null=True)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
     students  = models.ManyToManyField(Student, related_name="join_course", blank=True)
     code = models.CharField(max_length=100, unique=True)
     title = models.CharField(max_length=200)
@@ -84,7 +84,7 @@ class CourseEvent(models.Model):
 
 
 class Module(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     week = models.PositiveSmallIntegerField(default=1)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -92,13 +92,13 @@ class Module(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.course.title}'s module "
+        return f"{self.course}'s module "
 
 
 class Content(models.Model):
-    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=500)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
 
@@ -106,7 +106,9 @@ class Content(models.Model):
         return self.title
 
 class ContentType(models.Model):
-    content = models.ForeignKey(Content, on_delete=models.CASCADE)
+
+    content = models.ForeignKey(Content, on_delete=models.CASCADE,null=True, blank=True)
+
     url = models.URLField(max_length=200, null=True, blank=True)
     file = models.FileField(upload_to="course/content", null=True, blank=True)
     image = models.ImageField(upload_to='course/content', null=True, blank=True)

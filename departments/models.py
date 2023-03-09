@@ -70,7 +70,7 @@ class Semester(models.Model):
 class Subject(models.Model):
     name = models.CharField(max_length=200)
     credit = models.PositiveSmallIntegerField(default=1)
-    type = models.CharField(max_length=100)
+    subject_type = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     slug  = models.SlugField(max_length=200, unique=True)
     code = models.CharField(max_length=200)

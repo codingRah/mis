@@ -17,6 +17,10 @@ urlpatterns = [
     # semester url
     path('semester/create-list/', views.semester_list_create_view),
     path('semester/update-delete/<int:pk>/', views.semester_update_delete_view),
+
+    # subject url
+    path('subject/create-list/', views.subject_list_create_view),
+    path('subject/update-delete/<str:slug>/', views.subject_update_delete_view),
     
     
 ]
