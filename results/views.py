@@ -14,24 +14,22 @@ from departments.models import Subject
 
 
 # Create your views here.
-
-
 class ResultViews(viewsets.ModelViewSet):
-
     queryset = models.Result.objects.all()
     serializer_class = serializers.ResultSerializer
-    # permission_classes= [IsAuthenticated,]
+    # permission_classes = (IsAuthenticated,)
+
+    def list(self,request):
+        result = models.Result.objects.all()
+        serializer = serializers.ResultSerializer(result,many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def list(self, request):
-        serializer = serializers.ResultSerializer(self.queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
     def retrieve(self, request, pk=None):
-        course_status = get_object_or_404(self.queryset, pk=pk)
-        serializer = serializers.ResultSerializer(course_status)
+        result = get_object_or_404(self.queryset,pk=pk)
+        serializer = serializers.ResultSerializer(result)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def create(self, request):
+        
+    def create(self , request):
         serializer = serializers.ResultSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -39,28 +37,27 @@ class ResultViews(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def update(self, request,pk=None):
-        course_status = get_object_or_404(self.queryset, pk=pk)
-        serializer = serializers.ResultSerializer(course_status, data=request.data)
+    def update(self,requset, pk=None):
+        result = get_object_or_404(self.queryset,pk=pk)
+        serializer = serializers.ResultSerializer(result, data=requset.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def partial_update(self, request, pk=None):
-        course_status = get_object_or_404(self.queryset, pk=pk)
-        serializer = serializers.ResultSerializer(course_status, data=request.data, partial=True)
+    
+    def parial_padate(self, request, pk=None):
+        result = get_object_or_404(self.queryset,pk=pk)
+        serializer = serializers.ResultSerializer(result,data=request.data, parial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-    def destroy(self, request, pk=None):
-        course_status = get_object_or_404(self.queryset, pk=pk)
-        course_status.delete()
-        return Response({"message": "status deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-
-
+    
+    def destroy(self,request, pk=None):
+        result = get_object_or_404(self.queryset,pk=pk)
+        result.delete()
+        return Response({"message": "course result deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+          
