@@ -3,7 +3,7 @@ from . import models
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Staff
-        fields = ['id', 'user', 'first_name','last_name','father_name','gender','dob','department','bio','phone','status','image']
+        fields = ['id', 'user', 'first_name','last_name','father_name','gender','dob','department','bio','phone','status',]
  
         
 class InstructorNationalityCartInfoSerializer(serializers.ModelSerializer):

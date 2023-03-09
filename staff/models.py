@@ -26,7 +26,6 @@ class Staff(models.Model):
     bio = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=20)
     status = models.CharField(max_length=20, choices=STATUS, default='فعال')
-    image = models.ImageField(upload_to="staffs/avatar", null=True, blank=True)
 
     def __str__(self):
         return self.first_name          

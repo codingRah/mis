@@ -3,9 +3,10 @@ from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StudentSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
-from .models import Student, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
+from .serializers import StudentSerializer,StudentBulkUploadSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
+from .models import Student,StudentBulkUpload, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from .filters import StudentFilter
@@ -280,3 +281,18 @@ class StudentCartInfolViews(viewsets.ModelViewSet):
         student_cart = get_object_or_404(self.queryset, pk=pk)
         student_cart.delete()
         return Response({"message": "student cart info deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET','POST'])
+def student_bulk_upload_view(request):
+    if request.method == "POST":
+        file = request.FILES.get("file")
+        print(file, "hello")
+        bulk_upload = StudentBulkUpload.objects.create(
+            csv_file=file
+        )
+        print(bulk_upload, "builk here ")
+        if bulk_upload:
+            return Response({"message":"file uploaded"})
+        else:
+            return Response({"message":"file not uploaded "})
