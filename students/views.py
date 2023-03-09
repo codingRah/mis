@@ -19,11 +19,12 @@ class StudentViews(viewsets.ModelViewSet):
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
    
 
     def list(self, request):
         paginator = PageNumberPagination()
+
         paginator.page_size = 5
         query = request.query_params.get("query")
         department = request.query_params.get("department")

@@ -60,5 +60,5 @@ class SemesterSerializer(serializers.ModelSerializer):
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ['id','name','credit','subject_type','description','code','department','semester']
+        fields = ['id','name','credit','subject_type','slug','description','code','department','semester']
 

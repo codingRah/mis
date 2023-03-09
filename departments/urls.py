@@ -20,7 +20,7 @@ urlpatterns = [
 
     # subject url
     path('subject/create-list/', views.subject_list_create_view),
-    path('subject/update-delete/<int:pk>/', views.subject_update_delete_view),
+    path('subject/update-delete/<str:slug>/', views.subject_update_delete_view),
     
     
 ]
