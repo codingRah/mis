@@ -6,29 +6,52 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .serializers import StudentSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
 from .models import Student, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
-from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
 from .filters import StudentFilter
-from rest_framework.filters import SearchFilter, OrderingFilter
-from .pagination import StudentPagination
-from rest_framework import filters
+from django_filters.utils import translate_validation
+import ast
 
 
 class StudentViews(viewsets.ModelViewSet):
 
     """view for students"""
 
-    serializer_class = StudentSerializer
     queryset = Student.objects.all()
-    pagination_class = StudentPagination
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_class = StudentFilter
-    search_fields = ["kankor_id","first_name","last_name"]
-    ordering_fields = ["first_name"]
+    serializer_class = StudentSerializer
+    # permission_classes = (IsAuthenticated,)
+   
 
-    # def list(self, request):
-    #     student = Student.objects.all()
-    #     serializer = StudentSerializer(student, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    def list(self, request):
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+        query = request.query_params.get("query")
+        department = request.query_params.get("department")
+        sort = request.query_params.get("sort")
+        sort = ast.literal_eval(sort)
+        sort_result = ""
+        if query == None:
+            query = ""
+        
+        if sort['order'] == "asc":
+            sort_result = sort['key']
+        if sort['order'] == 'desc':
+            sort_result = sort['key']
+        
+        student = Student.objects.distinct().filter(
+            Q(first_name__icontains=query)|
+            Q(kankor_id__icontains=query)|
+            Q(gender__icontains=query)
+        )
+        student = student.filter(
+           Q(department__id=department) 
+        )
+        filterset = StudentFilter(request.GET, queryset=student)
+        if not filterset.is_valid():
+            raise translate_validation(filterset.errors)
+        pages = paginator.paginate_queryset(filterset.qs, request)
+        serializer = StudentSerializer(pages, many=True)
+        return paginator.get_paginated_response(serializer.data)
     
     def retrieve(self, request, pk=None):
         student = get_object_or_404(self.queryset, pk=pk)
