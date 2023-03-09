@@ -28,8 +28,6 @@ class DepartmentSerializer(serializers.ModelSerializer):
     dep_chief = serializers.SerializerMethodField(read_only=True)
     instructors = serializers.SerializerMethodField(read_only=True)
     total_students = serializers.SerializerMethodField(read_only=True)
-    total_active_students = serializers.SerializerMethodField(read_only=True)
-    total_new_students = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Department
         fields = ['id','name','description','slug','code','status','created_at','instructors','dep_chief','total_students']

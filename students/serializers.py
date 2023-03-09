@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import Student, StudentStatus, StudentNationlityCartInfo, StudentHostelService, StudentRelationContact
+from .models import Student,StudentBulkUpload, StudentStatus, StudentNationlityCartInfo, StudentHostelService, StudentRelationContact
 
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['id','user','kankor_id','first_name','last_name','father_name','grand_father_name','school','score','department', 'gender','semester','image']
+        fields = ['id','user','kankor_id','first_name','last_name','father_name','grand_father_name','school','score','department', 'gender','semester']
 
 
 class StudentStatusSerializer(serializers.ModelSerializer):
@@ -31,3 +31,9 @@ class StudentRelationContactSerializer(serializers.ModelSerializer):
         fields = ['id','student','relation','relative_name','occupation','phone1','phone2']
 
 
+
+
+class StudentBulkUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentBulkUpload
+        fields = '__all__'

@@ -3,13 +3,15 @@ from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
-from .serializers import StudentSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
-from .models import Student, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
+from .serializers import StudentSerializer,StudentBulkUploadSerializer, StudentHostelSerializer,StudentRelationContactSerializer, StudentStatusSerializer, StudentsCartSerializer
+from .models import Student,StudentBulkUpload, StudentHostelService, StudentNationlityCartInfo, StudentStatus,StudentRelationContact
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from .filters import StudentFilter
 from django_filters.utils import translate_validation
+import ast
 
 
 class StudentViews(viewsets.ModelViewSet):
@@ -18,28 +20,34 @@ class StudentViews(viewsets.ModelViewSet):
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
    
 
     def list(self, request):
-       
-        search = request.query_params.get("search")
-        order = request.query_params.get("order")
         paginator = PageNumberPagination()
-        paginator.page_size = 2
-        first_name = ""
-        if search == None:
-            search = ""
-        if order == None:
-            first_name = "first_name"
-        if order == "desc":
-            first_name = "-first_name"
+
+        paginator.page_size = 5
+        query = request.query_params.get("query")
+        department = request.query_params.get("department")
+        sort = request.query_params.get("sort")
+        sort = ast.literal_eval(sort)
+        sort_result = ""
+        if query == None:
+            query = ""
+        
+        if sort['order'] == "asc":
+            sort_result = sort['key']
+        if sort['order'] == 'desc':
+            sort_result = sort['key']
+        
         student = Student.objects.distinct().filter(
-            Q(first_name__icontains=search)|
-            Q(kankor_id__icontains=search)|
-            Q(gender__icontains=search)|
-            Q(department__name__icontains=search)
-            ).order_by(first_name)
+            Q(first_name__icontains=query)|
+            Q(kankor_id__icontains=query)|
+            Q(gender__icontains=query)
+        )
+        student = student.filter(
+           Q(department__id=department) 
+        )
         filterset = StudentFilter(request.GET, queryset=student)
         if not filterset.is_valid():
             raise translate_validation(filterset.errors)
@@ -273,3 +281,18 @@ class StudentCartInfolViews(viewsets.ModelViewSet):
         student_cart = get_object_or_404(self.queryset, pk=pk)
         student_cart.delete()
         return Response({"message": "student cart info deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET','POST'])
+def student_bulk_upload_view(request):
+    if request.method == "POST":
+        file = request.FILES.get("file")
+        print(file, "hello")
+        bulk_upload = StudentBulkUpload.objects.create(
+            csv_file=file
+        )
+        print(bulk_upload, "builk here ")
+        if bulk_upload:
+            return Response({"message":"file uploaded"})
+        else:
+            return Response({"message":"file not uploaded "})

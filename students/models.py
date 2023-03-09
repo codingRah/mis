@@ -20,11 +20,10 @@ class Student(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     gender = models.CharField(max_length=20, choices=GENDER ,default='آقا')
     semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True)
-    image = models.ImageField(upload_to="students/avatar", default='student.jpg')
 
 
     def __str__(self):
-        return self.first_name
+        return f"hello {self.first_name}"
 
 
 
@@ -81,3 +80,8 @@ class StudentRelationContact(models.Model):
 
     def __str__(self):
         return f"{self.student.first_name}'s relations info"
+
+
+class StudentBulkUpload(models.Model):
+    csv_file = models.FileField(upload_to="students/bulkupload")
+    date_uploaded = models.DateTimeField(auto_now=True)
