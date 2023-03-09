@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'drf_api_logger',
+    'results',
 
 
 ]
