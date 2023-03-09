@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "students.apps.StudentsConfig",
     'staff.apps.StaffConfig',
     'course.apps.CourseConfig',
+    'results.apps.ResultsConfig',
 
     # third party app
     'rest_framework',
@@ -54,7 +55,6 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'drf_api_logger',
-    'results',
 
 
 ]
