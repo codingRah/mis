@@ -1,5 +1,5 @@
 from django.urls import path,include
-from .views import StudentViews, StudentStatusViews, StudentRelationContactViews,StudentHostelViews, StudentCartInfolViews
+from .views import StudentViews, StudentStatusViews, student_bulk_upload_view, StudentRelationContactViews,StudentHostelViews, StudentCartInfolViews
 from rest_framework.routers import DefaultRouter
 
 
@@ -14,4 +14,5 @@ router.register("cartinfo", StudentCartInfolViews, basename="cartinfo")
 
 urlpatterns = [
     path('', include(router.urls)),
+    path("upload/" , student_bulk_upload_view, name="upload")
 ]
