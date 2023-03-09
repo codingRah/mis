@@ -11,8 +11,8 @@
 /staff/__pycache__
 /staff/migrations
 /course/migrations
-/resutls/__pycache__
-/resutls/migrations
+/results/__pycache__
+/results/migrations
 /course/__pycache__
 ### Django ###
 *.log
