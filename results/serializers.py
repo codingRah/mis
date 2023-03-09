@@ -8,15 +8,16 @@ class ResultSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = models.Result
-        fields = ['id', 'subject', 'student', 'class_activity', 'assignment', 'mid_term', 'final', 'project', 'is_pass', 'chances']
+        fields = ['id', 'subject', 'student', 'class_activity', 'assignment', 
+                'mid_term', 'final', 'project', 'is_pass', 'chances','total_score','activity_score','grade']
 
     def get_subject(self, obj):
-        data = obj.subject_set.all()
-        return SubjectSerializer(data, many=True).data
+        data = obj.subject
+        return SubjectSerializer(data).data
     
     def get_student(self, obj):
-        data = obj.student_set.all()
-        return StudentSerializer(data, many=True).data
+        data = obj.student
+        return StudentSerializer(data).data
     
     
 class ResultBulkUploadSerializer(serializers.ModelSerializer):
