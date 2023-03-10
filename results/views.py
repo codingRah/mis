@@ -8,6 +8,7 @@ from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from . import models
+from rest_framework.decorators import api_view
 from . import serializers
 from departments.models import Subject
 
@@ -60,4 +61,16 @@ class ResultViews(viewsets.ModelViewSet):
         result.delete()
         return Response({"message": "course result deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     
-          
+@api_view(['GET','POST'])
+def result_bulk_upload_view(request):
+    if request.method == "POST":
+        file = request.FILES.get("result-file")
+        
+        bulk_upload = models.CourseResultUpload.objects.create(
+            csv_file=file
+        )
+        
+        if bulk_upload:
+            return Response({"message":"file uploaded"})
+        else:
+            return Response({"message":"file not uploaded "})

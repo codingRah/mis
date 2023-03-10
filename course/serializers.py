@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import *
 from accounts.serializers import StaffShortInfoSerializer
 from departments.models import Subject
+from departments.serializers import SubjectShortInfoSerializer, SemesterSerializer
+
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
@@ -101,7 +103,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'subject',
             'code', 
             'title', 
-            'slug', 
+            # 'slug', 
             'description', 
             'created_at', 
             'updated_at', 
@@ -142,3 +144,35 @@ class SessionSerializer(serializers.ModelSerializer):
             "updated_at"
         ]
 
+# serialize subject assignment to instrucot
+
+class SubjectAssignmentToInstructorSerializer(serializers.ModelSerializer):
+    instructor = serializers.SerializerMethodField(read_only=True)
+    subject = serializers.SerializerMethodField(read_only=True)
+    session = serializers.SerializerMethodField(read_only=True)
+    semester = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = SubjectAssignmentToInstructor
+        fields = [
+            'instructor', 
+            'subject', 
+            'session', 
+            'semester', 
+            'created_at', 
+            'updated_at'
+        ]
+    def get_instructor(self, obj):
+        data = obj.instructor
+        return StaffShortInfoSerializer(data, many=False).data
+
+    def get_subject(self, obj):
+        data = obj.subject
+        return SubjectShortInfoSerializer(data, many=False).data
+    
+    def get_session(self, obj):
+        data = obj.session
+        return SessionShortInfoSerializer(data, many=False).data
+    
+    def get_semester(self, obj):
+        data = obj.semester
+        return SemesterSerializer(data, many=False).data

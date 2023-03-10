@@ -1,7 +1,7 @@
 from django.db import models
 from students.models import Student
 from staff.models import Staff
-from departments.models import Subject
+from departments.models import Subject, Semester
 from django.utils import timezone
 from django.utils.text import slugify
 import string
@@ -16,6 +16,19 @@ def generate_course_code():
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
 
 
+class SubjectAssignmentToInstructor(models.Model):
+    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    session = models.ForeignKey("Session", on_delete=models.CASCADE)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.subject.name} assigned to {self.instructor.first_name}"
+
+
+
 class Session(models.Model):
     session_type = models.CharField(max_length=100) # session type like session fall 2022 or session spring 2022
     description = models.TextField(null=True, blank=True)
@@ -27,6 +40,8 @@ class Session(models.Model):
 
     def __str__(self):
         return self.session_type
+
+
 
 
 class Course(models.Model):

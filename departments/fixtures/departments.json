@@ -1,0 +1,35 @@
+[
+    {
+        "model": "departments.Department",
+        "pk": 1,
+        "fields": {
+            "name": "Information System", 
+            "description" : "", 
+            "slug" : "dkdk2345dkd",
+            "code" : "information-system", 
+            "created_at" : "2000-01-01" 
+        }
+    },
+    {
+        "model": "departments.Department",
+        "pk": 2,
+        "fields": {
+            "name": "Software Engineering", 
+            "description" : "", 
+            "slug" : "dkdk234xjsdkd",
+            "code" : "information-enginerring", 
+            "created_at" : "2000-01-01" 
+        }
+    },
+    {
+        "model": "departments.Department",
+        "pk": 3,
+        "fields": {
+            "name": "Information Technology", 
+            "description" : "", 
+            "slug" : "dkdk23123dkd45dkd",
+            "code" : "informationdkdkd", 
+            "created_at" : "2000-01-01" 
+        }
+    }
+]

@@ -287,11 +287,11 @@ class StudentCartInfolViews(viewsets.ModelViewSet):
 def student_bulk_upload_view(request):
     if request.method == "POST":
         file = request.FILES.get("file")
-        print(file, "hello")
+        
         bulk_upload = StudentBulkUpload.objects.create(
             csv_file=file
         )
-        print(bulk_upload, "builk here ")
+        
         if bulk_upload:
             return Response({"message":"file uploaded"})
         else:
