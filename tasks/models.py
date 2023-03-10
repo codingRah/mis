@@ -6,8 +6,8 @@ from accounts.models import User
 from students.models import Student
 
 class Assignment(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.ForeignKey(Content, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
     file = models.FileField(upload_to="assignments/", blank=True, null=True)
@@ -34,7 +34,7 @@ class Respond(models.Model):
         ("سخت", "سخت"),
         ("دشوار", "دشوار"),
     )
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    sender = models.ForeignKey(Student, on_delete=models.CASCADE)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True)
