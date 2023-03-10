@@ -14,6 +14,8 @@
 /results/__pycache__
 /results/migrations
 /course/__pycache__
+/tasks/__pycache__
+/tasks/migrations
 ### Django ###
 *.log
 *.pot
