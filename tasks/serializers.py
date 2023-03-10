@@ -37,7 +37,7 @@ class RespondSerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField(read_only=True)
     assignment = serializers.SerializerMethodField(read_only=True)
     class Meta:
-        model = models.Assignment
+        model = models.Respond
         fields = [
             'id',
             'sender',
@@ -51,27 +51,27 @@ class RespondSerializer(serializers.ModelSerializer):
         
     def get_sender(self, obj):
         data = obj.sender
-        return StudentSerializer(data, many=False)
+        return StudentSerializer(data, many=False).data
     
     def get_assignment(self, obj):
         data = obj.assignment
-        return AssignmentSerializer(data, many=False)
+        return AssignmentSerializer(data, many=False).data
     
     
 class AssignmentScoreSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField(read_only=True)
     assignment = serializers.SerializerMethodField(read_only=True)
     class Meta:
-        model = models.Assignment
-        fields = ['id','student', 'assignment', 'acore']    
+        model = models.AssignmentScore
+        fields = ['id','student', 'assignment', 'score']    
         
     def get_student(self, obj):
         data = obj.student
-        return StudentSerializer(data, many=False)
+        return StudentSerializer(data, many=False).data
     
     def get_assignment(self, obj):
         data = obj.assignment
-        return AssignmentSerializer(data, many=False)
+        return AssignmentSerializer(data, many=False).data
     
     
         

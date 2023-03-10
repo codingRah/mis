@@ -6,7 +6,7 @@ from accounts.models import User
 from students.models import Student
 
 class Assignment(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     content = models.ForeignKey(Content, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
