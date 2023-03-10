@@ -14,6 +14,7 @@ router.register("session", views.CourseSessionViews, basename="session")
 
 router.register("event", views.CourseEventViews, basename="event")
 router.register("content", views.CourseContentViews, basename="content")
+router.register("subject-assign", views.SubjectAssignmentToInstructorViews, basename="subject-assign")
 
 
 urlpatterns = [

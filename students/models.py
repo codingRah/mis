@@ -23,7 +23,7 @@ class Student(models.Model):
 
 
     def __str__(self):
-        return f"hello {self.first_name}"
+        return self.first_name
 
 
 

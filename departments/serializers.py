@@ -57,8 +57,15 @@ class SemesterSerializer(serializers.ModelSerializer):
         model = Semester
         fields = ['id','program','semester_number','semester_name']
 
+
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = ['id','name','credit','subject_type','slug','description','code','department','semester']
 
+
+
+class SubjectShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ['name','credit','subject_type','code']

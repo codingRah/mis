@@ -415,3 +415,54 @@ class CourseSessionViews(viewsets.ModelViewSet):
         session.delete()
         return Response({"message": "Course Session deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
                                                                         
+
+
+class SubjectAssignmentToInstructorViews(viewsets.ModelViewSet):
+
+    queryset = models.SubjectAssignmentToInstructor.objects.all()
+    serializer_class = serializers.SubjectAssignmentToInstructorSerializer
+    # permission_classes= [IsAuthenticated,]
+    
+    def list(self, request):
+        sub_instructor = models.SubjectAssignmentToInstructor.objects.all()
+
+        serializer = serializers.SubjectAssignmentToInstructorSerializer(sub_instructor, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        sub_instructor = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.SubjectAssignmentToInstructorSerializer(sub_instructor)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        serializer = serializers.SubjectAssignmentToInstructorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request,pk=None):
+        sub_instructor = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.SubjectAssignmentToInstructorSerializer(sub_instructor, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        sub_instructor = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.SubjectAssignmentToInstructorSerializer(sub_instructor, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def destroy(self, request, pk=None):
+        sub_instructor = get_object_or_404(self.queryset, pk=pk)
+        sub_instructor.delete()
+        return Response({"message": "subject assing to instructor deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
