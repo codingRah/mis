@@ -1,9 +1,8 @@
 from rest_framework import serializers
 from . import models
-from accounts.serializers import UserSerializer
 from course.serializers import ContentSerializer
 from students.serializers import StudentSerializer
-
+from accounts.serializers import UserSerializer
 
 class AssignmentSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField(read_only=True)
@@ -18,7 +17,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
             'description',
             'file',
             'assigned_at',
-            'exprie_date',
+            'expire_date',
             'expire_time',
             'score',
             'lock_after_expiration',
@@ -27,11 +26,11 @@ class AssignmentSerializer(serializers.ModelSerializer):
         
     def get_owner(self, obj):
         data = obj.owner
-        return UserSerializer(data, many=False)
+        return UserSerializer(data, many=False).data
     
     def get_content(self, obj):
         data = obj.content
-        return ContentSerializer(data, many=False)
+        return ContentSerializer(data, many=True).data
 
 
 class RespondSerializer(serializers.ModelSerializer):

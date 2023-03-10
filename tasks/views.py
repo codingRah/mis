@@ -6,25 +6,26 @@ from django.shortcuts import get_list_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework import status
+from . import serializers
 
 
 
 class AssignmentViews(viewsets.ModelViewSet):
     queryset = models.Assignment.objects.all()
-    serializer_class = serializers
-    permission_classes = (IsAuthenticated,)
+    serializer_class = serializers.AssignmentSerializer
+    # permission_classes = (IsAuthenticated,)
 
     def list(self,request):
         assignment = models.Assignment.objects.all()
-        serailizer = serializers
+        serailizer = serializers.AssignmentSerializer(assignment, many=True)
         return Response(serailizer.data, status=status.HTTP_200_OK)
     
     def retrieve(self, request, pk=None):
         assignemt = get_list_or_404(self.queryset,pk=pk)
-        serializer = serializer
+        serializer = serializers.AssignmentSerializer(assignemt, pk=pk)
         return Response(serializer.data, status=status.HTTP_200_OK)
     def create(self, requset):
-        serializer = serializer(data=requset.data)
+        serializer = serializers.AssignmentSerializer(data=requset.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data , status=status.HTTP_201_CREATED)
@@ -33,7 +34,7 @@ class AssignmentViews(viewsets.ModelViewSet):
         
     def update(self, requset, pk=None):
         assignment = get_list_or_404(self.queryset,pk=pk)
-        serializer = serializer
+        serializer = serializers.AssignmentSerializer(assignment,data=requset.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -43,7 +44,7 @@ class AssignmentViews(viewsets.ModelViewSet):
 
     def partial_update(self, requset, pk=None):
         assignment = get_list_or_404(self.queryset, pk=pk)
-        serializer = serializer
+        serializer = serializers.AssignmentSerializer(assignment,data=requset.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
