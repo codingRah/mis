@@ -18,7 +18,7 @@ class PermissionSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'user_type','image']
+        fields = ['id', 'email', 'username', 'user_type','avatar']
 
 
 class UserTypeSerializer(serializers.ModelSerializer):
@@ -37,7 +37,7 @@ class UserSerializerWithToken(serializers.ModelSerializer):
     authority = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
-        fields = ['id', 'username', 'email','authority', 'token','image']
+        fields = ['id', 'username', 'email','authority', 'token','avatar']
 
     def get_authority(self, obj):
         return obj.user_type.values_list("name", flat=True)
