@@ -67,8 +67,8 @@ def user_list_create_view(request):
                 u_type = UserType.objects.get(id=t['value'])
                 user.user_type.add(u_type)
                 user.save()
-            serializer = UserSerializerWithToken(user, many=False)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+                serializer = UserSerializerWithToken(user, many=False)
+                return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
