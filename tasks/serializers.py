@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from . import models
 from course.serializers import ContentSerializer
-from students.serializers import StudentSerializer
+from students.serializers import StudentSerializer,StudentShortInfoSerializer
 from accounts.serializers import UserSerializer
 
 class AssignmentSerializer(serializers.ModelSerializer):
@@ -30,7 +30,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     
     def get_content(self, obj):
         data = obj.content
-        return ContentSerializer(data, many=True).data
+        return ContentSerializer(data, many=False).data
 
 
 class RespondSerializer(serializers.ModelSerializer):
@@ -51,7 +51,7 @@ class RespondSerializer(serializers.ModelSerializer):
         
     def get_sender(self, obj):
         data = obj.sender
-        return StudentSerializer(data, many=False).data
+        return StudentShortInfoSerializer(data, many=False).data
     
     def get_assignment(self, obj):
         data = obj.assignment

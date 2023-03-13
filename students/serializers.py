@@ -8,6 +8,12 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ['id','user','kankor_id','first_name','last_name','father_name','grand_father_name','school','score','department', 'gender','semester']
 
 
+class StudentShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['first_name','last_name','father_name','department', 'gender','semester']
+
+
 class StudentStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentStatus
