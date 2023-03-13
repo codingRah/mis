@@ -149,5 +149,5 @@ class AssignmentScoreViews(viewsets.ModelViewSet):
     def destroy(self, requset, pk=None):
         score = get_object_or_404(self.queryset, pk=pk)
         score.delete()
-        return Response({"message": "respond deleted successfully"})    
+        return Response({"message": "Score deleted successfully"})    
         

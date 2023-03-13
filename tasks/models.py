@@ -53,7 +53,7 @@ class Respond(models.Model):
 
 
 class AssignmentScore(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
     assignment = models.ForeignKey(Assignment, on_delete=models.SET_NULL, null=True)
     score = models.DecimalField(decimal_places=2, max_digits=4)
 
