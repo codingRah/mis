@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'django_filters',
-    'drf_api_logger',
+    # 'drf_api_logger',
 
 
 ]
@@ -68,7 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'drf_api_logger.middleware.api_logger_middleware.APILoggerMiddleware',
+    # 'drf_api_logger.middleware.api_logger_middleware.APILoggerMiddleware',
 ]
 
 ROOT_URLCONF = "management.urls"
