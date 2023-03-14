@@ -12,6 +12,8 @@ from rest_framework.pagination import PageNumberPagination
 from .filters import StudentFilter
 from django_filters.utils import translate_validation
 import ast
+from results.models import Result,Course
+from departments.models import Subject  
 
 
 class StudentViews(viewsets.ModelViewSet):
@@ -296,3 +298,79 @@ def student_bulk_upload_view(request):
             return Response({"message":"file uploaded"})
         else:
             return Response({"message":"file not uploaded "})
+
+
+@api_view(['GET'])
+def semester_report_view(request, pk):
+    student = Student.objects.get(pk=pk)
+    results = []
+    for result in Result.objects.all():
+        if result.student == student and result.subject.semester == student.semester:
+            results.append(result)
+    subjects = Subject.objects.filter(department=student.department, semester=student.semester)
+    
+    my_courses = Course.objects.filter(students=student)
+    # drawing charts for results
+    courses = []
+    score = []
+
+    for result in results:
+        if result.subject.semester == student.semester:
+            courses.append(result.subject.subject)
+            score.append(int(result.total_score()))
+    
+    total_credits = 0
+    scores = 0
+    percentage = 0
+    passed_credits = 0
+    grade = "D"
+
+    for subject in subjects:
+        total_credits += subject.credit
+
+    for result in results:
+        if result.subject.semester.semester_name == result.student.semester.semester_name:
+            scores += result.total_score()
+            if result.total_score() > 55:
+                passed_credits += result.subject.credit
+            if result.total_score() >= 55:
+                result.is_pass = True
+            else:
+                result.is_pass = False
+            result.save()    
+    if passed_credits > (total_credits // 2) and student.semester.semester_number != 8:
+        student.semester.semester_number += 1
+
+        for course in my_courses:
+            course.students.remove(student)
+        student.save()
+    try:
+        percentage = scores / total_credits
+    except:
+        percentage = 0
+
+    status = "ناکام"
+    for r in results:
+        if r.total_score() < 55:
+            status = "چانس"
+            break
+        else:
+            status = "کامیاب"
+    if passed_credits < (total_credits // 2):
+        status = "ناکام"
+    
+    if percentage < 55:
+        grade = "F"
+    elif percentage >= 55 or percentage <= 69:
+        grade = "D"
+    elif percentage >= 70 or percentage <= 79:
+        grade = "C"
+    elif percentage >= 80 or percentage <= 89:
+        grade = "B"
+    elif percentage >= 90 or percentage <= 100:
+        grade = "A"
+    # context = {
+    #     "results": results,
+    #     "student": student," total_credits": total_credits,"scores":scores," percentage":percentage,"passed_credits": passed_credits,"grade":grade,"score":score,"courses":courses,"status":status
+    # }
+    return 
