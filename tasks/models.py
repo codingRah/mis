@@ -34,12 +34,12 @@ class Respond(models.Model):
         ("سخت", "سخت"),
         ("دشوار", "دشوار"),
     )
-    sender = models.ForeignKey(Student, on_delete=models.CASCADE)
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
+    sender = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True)
     difficulties = models.CharField(max_length=20, choices=DIFFICULITIES, default="آسان")
-    file = models.FileField(upload_to="responds/", blank=True)
+    file = models.FileField(upload_to="responds/", null=True, blank=True)
     # it should be change in to persian
     respond_at = models.DateTimeField(auto_now_add=True)
   
