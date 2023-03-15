@@ -25,6 +25,8 @@ class Result(models.Model):
     project = models.DecimalField(max_digits=4, decimal_places=2,default=0.0)
     is_pass = models.BooleanField(default=False)
     chances = models.CharField(max_length=20, choices=CHANCES, default="اول")
+    present = models.CharField(max_length=200)
+    absent = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
         if not self.is_pass:
