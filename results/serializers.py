@@ -9,7 +9,10 @@ class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Result
         fields = ['id', 'subject', 'student', 'class_activity', 'assignment', 
-                'mid_term', 'final', 'project', 'is_pass', 'chances','total_score','activity_score','grade']
+                'mid_term', 'final', 'project', 'is_pass', 'chances','total_score','activity_score','grade',
+                'persent', 'absent'
+                
+                ]
 
     def get_subject(self, obj):
         data = obj.subject
