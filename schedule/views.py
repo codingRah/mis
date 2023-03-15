@@ -56,5 +56,5 @@ class ScheduleViews(viewsets.ModelViewSet):
     def destroy(self,request, pk=None):
         schedule = get_object_or_404(self.queryset,pk=pk)
         schedule.delete()
-        return Response({"message": "course result deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "schedule deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     

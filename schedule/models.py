@@ -6,11 +6,11 @@ from staff.models import Staff
 
 class Schedule(models.Model):
     
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE, null=True, blank=True)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, null=True, blank=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
+    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
     days = models.CharField(max_length=250)
     hours = models.CharField(max_length=250)
     from_time = models.TimeField()
