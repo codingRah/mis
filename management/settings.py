@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'course.apps.CourseConfig',
     'results.apps.ResultsConfig',
     'tasks.apps.TasksConfig',
+    'schedule.apps.ScheduleConfig',
 
     # third party app
     'rest_framework',
