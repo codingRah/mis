@@ -1,10 +1,12 @@
 from . import serializers
 from rest_framework.response import Response
+
 from rest_framework.decorators import permission_classes , api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import Permission
+from rest_framework.pagination import PageNumberPagination
 from . import models
 
 
@@ -195,21 +197,28 @@ def semester_update_delete_view(request, pk):
 # @permission_classes([IsAuthenticated])
 def subject_list_create_view(request):
     data = request.data
-    search = request.query_params.get("search")
-    order = request.query_params.get("order")
-    name = ""
-    if search == None:
-        search = ""
-    if order == None:
-        order == "asc"
-    if order == "asc":
-        name = "name"
-    else:
-        name = "-name"
+    
+
     if request.method == 'GET':
-        subject = models.Subject.objects.filter(name__icontains=search).order_by(name)
-        serializer = serializers.SubjectSerializer(subject, many=True)
-        return Response(serializer.data)
+        query = request.query_params.get("query", "")
+        sort_query = request.query_params.get('sort', {'order' : "asc", "key" : "name"})
+        sort_query = eval(sort_query)
+        pageSize = request.query_params.get("pageSize")
+
+        paginator = PageNumberPagination()
+        paginator.page_size = pageSize
+        paginator.page_query_param = 'pageIndex'
+        queryset = models.Subject.objects.all()
+        if query:
+            queryset = queryset.filter(name__icontains=query)
+        if sort_query:
+            sort_order = '-' if sort_query.get('order', "") == 'desc' else ''
+            sort_field = sort_query.get('key', 'name')
+            if sort_field in [f.name for f in models.Subject._meta.fields]:
+                queryset = queryset.order_by(f"{sort_order}{sort_field}")
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = serializers.SubjectSerializer(paginated_queryset, many=True)
+        return paginator.get_paginated_response(serializer.data)
     
     if request.method == 'POST':
         name = data['name']

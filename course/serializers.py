@@ -131,6 +131,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class SessionSerializer(serializers.ModelSerializer):
+    courses = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Session
         fields = [
@@ -141,8 +142,12 @@ class SessionSerializer(serializers.ModelSerializer):
             "session_end_date", 
             "status", 
             "created_at", 
-            "updated_at"
+            "updated_at", 
+            "courses"
         ]
+    def get_courses(self, obj):
+        data = obj.course_set.all()
+        return CourseSerializer(data, many=True).data
 
 # serialize subject assignment to instrucot
 
