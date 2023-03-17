@@ -68,4 +68,4 @@ class SubjectSerializer(serializers.ModelSerializer):
 class SubjectShortInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ['name','credit','subject_type','code']
+        fields = ['name','credit']

@@ -72,7 +72,8 @@ class SessionShortInfoSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'session_type', 
-            'session_start_date'
+            'session_start_date',
+            'session_duration',
         ]
 
 
@@ -137,6 +138,7 @@ class SessionSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             "session_type", 
+            "session_duration",
             "description", 
             "session_start_date", 
             "session_end_date", 

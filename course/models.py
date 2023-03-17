@@ -17,10 +17,10 @@ def generate_course_code():
 
 
 class SubjectAssignmentToInstructor(models.Model):
-    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    session = models.ForeignKey("Session", on_delete=models.CASCADE)
-    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE,null=True, blank=True)
+    session = models.ForeignKey("Session", on_delete=models.CASCADE,null=True, blank=True)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE,null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -30,7 +30,14 @@ class SubjectAssignmentToInstructor(models.Model):
 
 
 class Session(models.Model):
+    DURATION = (
+        ("16 weeks", "16 weeks"),
+        ("12 weeks", "12 weeks"),
+        ("10 weeks", "10 weeks"),
+        ("8 weeks", "8 weeks"),
+    )
     session_type = models.CharField(max_length=100) # session type like session fall 2022 or session spring 2022
+    session_duration = models.CharField(max_length=50, choices=DURATION, default="16 weeks")
     description = models.TextField(null=True, blank=True)
     session_start_date = models.DateField()
     session_end_date = models.DateField()
