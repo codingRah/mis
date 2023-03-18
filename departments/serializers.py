@@ -59,12 +59,20 @@ class SemesterSerializer(serializers.ModelSerializer):
 
 
 class SubjectSerializer(serializers.ModelSerializer):
+    department = serializers.SerializerMethodField(read_only=True)
+    semester = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Subject
         fields = ['id','name','credit','subject_type','slug','description','code','department','semester']
 
+    def get_department(self, obj):
+        data = obj.department
+        return DepartmentSerializer(data, many=False).data
 
-
+    def get_semester(self, obj):
+        data = obj.semester
+        return SemesterSerializer(data, many=False).data
+    
 class SubjectShortInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
