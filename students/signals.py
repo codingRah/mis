@@ -70,9 +70,9 @@ def create_bulk_student(sender, created, instance, *args, **kwargs):
                     )
                     user.user_type.add(1)
                     user.save()
-                print("before check ", semester)
+                
                 check = Student.objects.filter(kankor_id=kankor_id).exists()
-                print("after check ", check)
+                
                 if not check:
                     students.append(
                         Student(

@@ -31,30 +31,28 @@ class StudentViews(viewsets.ModelViewSet):
         paginator.page_size = 5
         query = request.query_params.get("query")
         department = request.query_params.get("department")
-        sort = request.query_params.get("sort")
-        sort = ast.literal_eval(sort)
-        sort_result = ""
-        if query == None:
-            query = ""
+        sort_query = request.query_params.get('sort', {'order' : "asc", "key" : "name"})
+        sort_query = eval(sort_query)
+        pageSize = request.query_params.get("pageSize")
+       
+        paginator = PageNumberPagination()
+        paginator.page_size = pageSize
+        paginator.page_query_param = 'pageIndex'
         
-        if sort['order'] == "asc":
-            sort_result = sort['key']
-        if sort['order'] == 'desc':
-            sort_result = sort['key']
-        
-        student = Student.objects.distinct().filter(
+        queryset = Student.objects.distinct().filter(
             Q(first_name__icontains=query)|
             Q(kankor_id__icontains=query)|
             Q(gender__icontains=query)
         )
-        student = student.filter(
-           Q(department__id=department) 
-        )
-        filterset = StudentFilter(request.GET, queryset=student)
-        if not filterset.is_valid():
-            raise translate_validation(filterset.errors)
-        pages = paginator.paginate_queryset(filterset.qs, request)
-        serializer = StudentSerializer(pages, many=True)
+        
+        if sort_query:
+            sort_order = '-' if sort_query.get('order', "") == 'desc' else ''
+            sort_field = sort_query.get('key', 'name')
+            if sort_field in [f.name for f in Student._meta.fields]:
+                queryset = queryset.order_by(f"{sort_order}{sort_field}")
+        
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+        serializer = StudentSerializer(paginated_queryset, many=True)
         return paginator.get_paginated_response(serializer.data)
     
     def retrieve(self, request, pk=None):
