@@ -9,6 +9,7 @@ from departments.models import Department, Semester
 from .models import StudentBulkUpload, Student
 from accounts.models import UserType
 from django.contrib.auth.hashers import make_password
+from django.db.models.signals import pre_delete
 
 @receiver(post_save, sender=StudentBulkUpload)
 def create_bulk_student(sender, created, instance, *args, **kwargs):
@@ -95,3 +96,12 @@ def create_bulk_student(sender, created, instance, *args, **kwargs):
         Student.objects.bulk_create(students)
         instance.csv_file.close()
         instance.delete()
+        
+
+def delete_user(sender, instance, **kwargs):
+    user = instance.user
+    user.delete()
+
+post_delete.connect(delete_user, sender=Student)
+
+        

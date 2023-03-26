@@ -155,7 +155,7 @@ class SessionSerializer(serializers.ModelSerializer):
 # serialize subject assignment to instrucot
 
 class SubjectAssignmentToInstructorSerializer(serializers.ModelSerializer):
-    instructor = serializers.SerializerMethodField(read_only=True)
+    instructor = StaffShortInfoSerializer(many=True, read_only=True)
     subject = serializers.SerializerMethodField(read_only=True)
     session = serializers.SerializerMethodField(read_only=True)
     semester = serializers.SerializerMethodField(read_only=True)
@@ -169,9 +169,9 @@ class SubjectAssignmentToInstructorSerializer(serializers.ModelSerializer):
             'created_at', 
             'updated_at'
         ]
-    def get_instructor(self, obj):
-        data = obj.instructor
-        return StaffShortInfoSerializer(data, many=False).data
+    # def get_instructor(self, obj):
+    #     data = obj.instructor
+    #     return StaffShortInfoSerializer(data, many=False).data
 
     def get_subject(self, obj):
         data = obj.subject

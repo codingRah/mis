@@ -14,6 +14,7 @@ from django_filters.utils import translate_validation
 import ast
 from results.models import Result,Course
 from departments.models import Subject  
+from accounts.models import User
 
 
 class StudentViews(viewsets.ModelViewSet):
