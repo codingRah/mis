@@ -7,7 +7,7 @@ from staff.models import Staff
 class StaffShortInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
-        fields = ['first_name', 'last_name',]
+        fields = ['first_name', 'last_name']
 
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:

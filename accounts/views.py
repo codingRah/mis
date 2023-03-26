@@ -34,6 +34,7 @@ def user_list_create_view(request):
         user = User.objects.all()
         serializer = UserSerializer(user, many=True)
         return Response(serializer.data)
+    
     if request.method == 'POST':
         data  = request.data
         username = data["username"]

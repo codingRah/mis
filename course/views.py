@@ -425,7 +425,6 @@ class SubjectAssignmentToInstructorViews(viewsets.ModelViewSet):
     
     def list(self, request):
         sub_instructor = models.SubjectAssignmentToInstructor.objects.all()
-
         serializer = serializers.SubjectAssignmentToInstructorSerializer(sub_instructor, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -438,6 +437,8 @@ class SubjectAssignmentToInstructorViews(viewsets.ModelViewSet):
         serializer = serializers.SubjectAssignmentToInstructorSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            print(f"serialiser: {serializer}")
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

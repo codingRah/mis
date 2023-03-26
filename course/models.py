@@ -17,7 +17,7 @@ def generate_course_code():
 
 
 class SubjectAssignmentToInstructor(models.Model):
-    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
+    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE,null=True, blank=True)
     session = models.ForeignKey("Session", on_delete=models.CASCADE,null=True, blank=True)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE,null=True, blank=True)
@@ -25,7 +25,7 @@ class SubjectAssignmentToInstructor(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.subject.name} assigned to {self.instructor.first_name}"
+        return f"{self.subject} assigned to {self.instructor}"
 
 
 
