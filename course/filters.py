@@ -4,4 +4,4 @@ from . import models
 class CourseFilter(FilterSet):
     class Meta:
         model = models.Course
-        fields = ['owner', 'session', 'subject', 'students']
+        fields = ['owner', 'session', 'subject']

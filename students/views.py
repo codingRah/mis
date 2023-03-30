@@ -14,6 +14,7 @@ from django_filters.utils import translate_validation
 import ast
 from results.models import Result,Course
 from departments.models import Subject  
+from accounts.models import User
 
 
 class StudentViews(viewsets.ModelViewSet):
@@ -22,39 +23,34 @@ class StudentViews(viewsets.ModelViewSet):
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
    
 
     def list(self, request):
+        search = request.query_params.get('search')
+        order = request.query_params.get('order')
         paginator = PageNumberPagination()
-
-        paginator.page_size = 5
-        query = request.query_params.get("query")
-        department = request.query_params.get("department")
-        sort_query = request.query_params.get('sort', {'order' : "asc", "key" : "name"})
-        sort_query = eval(sort_query)
-        pageSize = request.query_params.get("pageSize")
-       
-        paginator = PageNumberPagination()
-        paginator.page_size = pageSize
-        paginator.page_query_param = 'pageIndex'
+        paginator.page_size=5
+        first_name=''
+        if search==None:
+            search=''
+        if order == None:
+            first_name = 'first_name'
+        elif order == 'desc':
+            first_name = '-first_name'
+                    
+        student = Student.objects.distinct().filter(
+            Q(first_name__icontains=search) |
+            Q(last_name__icontains=search) |
+            Q(score__icontains=search)  
+        ).order_by(first_name)
         
-        queryset = Student.objects.distinct().filter(
-            Q(first_name__icontains=query)|
-            Q(kankor_id__icontains=query)|
-            Q(gender__icontains=query)
-        )
+        studentfilter = StudentFilter(request.GET, queryset=student)
+        pages = paginator.paginate_queryset(studentfilter.qs, request)
         
-        if sort_query:
-            sort_order = '-' if sort_query.get('order', "") == 'desc' else ''
-            sort_field = sort_query.get('key', 'name')
-            if sort_field in [f.name for f in Student._meta.fields]:
-                queryset = queryset.order_by(f"{sort_order}{sort_field}")
-        
-        paginated_queryset = paginator.paginate_queryset(queryset, request)
-        serializer = StudentSerializer(paginated_queryset, many=True)
+        serializer = StudentSerializer(pages, many=True)
         return paginator.get_paginated_response(serializer.data)
-    
+
     def retrieve(self, request, pk=None):
         student = get_object_or_404(self.queryset, pk=pk)
         serializer = StudentSerializer(student)
