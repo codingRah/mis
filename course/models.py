@@ -55,6 +55,7 @@ class Course(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
     code = models.CharField(max_length=100, unique=True)
     title = models.CharField(max_length=200)
+    student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, blank=True)
     slug = models.SlugField(max_length=100, unique=True, editable=False)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -133,9 +134,3 @@ class ContentType(models.Model):
         return f"{self.content.title}'s type"
 
 
-class AssignStudentToCourse(models.Model):
-    student = models.ManyToManyField(Student, null=True)
-    course = models.ManyToManyField(Course,  null=True)
-    
-    # def __str__(self) -> str:
-    #     return f"{self.student}-{self.course}"
