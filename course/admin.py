@@ -10,5 +10,6 @@ admin.site.register(models.CourseEvent)
 admin.site.register(models.Module)
 admin.site.register(models.CourseStatus)
 admin.site.register(models.SubjectAssignmentToInstructor)
+admin.site.register(models.AssignStudentToCourse)
 
 

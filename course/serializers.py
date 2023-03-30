@@ -3,67 +3,7 @@ from .models import *
 from accounts.serializers import StaffShortInfoSerializer
 from departments.models import Subject
 from departments.serializers import SubjectShortInfoSerializer, SemesterSerializer
-
-
-
-class CourseDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CourseDetail
-        fields = [
-            "id",'image', 'color', 'course'
-        ]
-
-class CourseStatusSerializer(serializers.ModelSerializer):
-    # course = serializers.SerializerMethodField(read_only=True)
-    class Meta:
-        model = CourseStatus
-        fields = [
-            'id', 'status', 'course'
-        ]
-
-class ContentTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ContentType
-        fields = [
-            'id', 'url', 'file', 'image','content'
-        ]
-
-    
-class ContentSerializer(serializers.ModelSerializer):
-    content_types = serializers.SerializerMethodField(read_only=True)
-    class Meta:
-        model = Content
-        fields = [
-            'id', 
-            'title', 
-            'description', 
-            'created_at', 
-            'updated_at', 
-            'content_types'
-        ]
-
-    def get_content_types(self, obj):
-        data = obj.contenttype_set.all()
-        return ContentTypeSerializer(data, many=True).data
-
-class ModuleSerializer(serializers.ModelSerializer):
-    contents = serializers.SerializerMethodField(read_only=True)
-    class Meta:
-        model = Module
-        fields = [
-            'id',
-            'week', 
-            'title', 
-            'description', 
-            'created_at', 
-            'updated_at', 
-            "contents",
-            'course'
-        ]
-
-    def get_contents(self, obj):
-        data = obj.content_set.all()
-        return ContentSerializer(data, many=True).data
+from students.serializers import StudentShortInfoSerializer
 
 
 class SessionShortInfoSerializer(serializers.ModelSerializer):
@@ -72,28 +12,16 @@ class SessionShortInfoSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'session_type', 
-            
             'session_start_date',
-            'session_duration',
+            'session_duration'
         ]
 
 
-class SubjectShortInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Subject
-        fields = ['id','name', 'credit']
-
-
-class CourseEventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CourseEvent
-        fields = ['id','course','title','description','start_at','end_at']
 
 class CourseSerializer(serializers.ModelSerializer):
     owner = StaffShortInfoSerializer(read_only=True)
     session = SessionShortInfoSerializer(read_only=True)
     subject = SubjectShortInfoSerializer(read_only=True)
-    # modules = serializers.SerializerMethodField()
     # detail = serializers.SerializerMethodField()
     # status  = serializers.SerializerMethodField(read_only=True)
     class Meta:
@@ -105,19 +33,13 @@ class CourseSerializer(serializers.ModelSerializer):
             'subject',
             'code', 
             'title', 
-            # 'slug', 
             'description', 
             'created_at', 
-            'updated_at', 
+            'updated_at'
             # 'modules', 
             # 'detail', 
             # 'status'
         ]
-        
-    def get_owner(self, obj):
-        data = obj.owner_set.all()
-        return StaffShortInfoSerializer(data, many=True).data
-
     # def get_modules(self, obj):
     #     modules = obj.module_set.all()
     #     return ModuleSerializer(modules, many=True).data
@@ -132,8 +54,85 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 
+class CourseDetailSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(many=False, read_only=True)
+    class Meta:
+        model = CourseDetail
+        fields = [
+            "id",'image', 'color', 'course'
+        ]
+
+class CourseStatusSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(many=False, read_only=True)
+    class Meta:
+        model = CourseStatus
+        fields = [
+            'id', 'status', 'course'
+        ]
+
+
+class ModuleSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(many=False, read_only=True)
+    class Meta:
+        model = Module
+        fields = [
+            'id',
+            'week', 
+            'title', 
+            'description', 
+            'created_at', 
+            'updated_at', 
+            'course'
+        ]
+
+    # def get_contents(self, obj):
+    #     data = obj.content_set.all()
+    #     return ContentSerializer(data, many=True).data
+
+
+class ContentSerializer(serializers.ModelSerializer):
+    module = ModuleSerializer(many=False, read_only=True)
+    class Meta:
+        model = Content
+        fields = [
+            'id', 
+            'title', 
+            'description', 
+            'created_at', 
+            'updated_at', 
+            'module'
+        ]
+
+
+class ContentTypeSerializer(serializers.ModelSerializer):
+    content = ContentSerializer(many=False, read_only=True)
+    class Meta:
+        model = ContentType
+        fields = [
+            'id', 'url', 'file', 'image','content'
+        ]
+
+ 
+
+
+
+class SubjectShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ['id','name', 'credit']
+
+
+class CourseEventSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(many=False, read_only=True)
+    class Meta:
+        model = CourseEvent
+        fields = ['id','course','title','description','start_at','end_at']
+
+
+
+
 class SessionSerializer(serializers.ModelSerializer):
-    courses = serializers.SerializerMethodField(read_only=True)
+    
     class Meta:
         model = Session
         fields = [
@@ -145,12 +144,12 @@ class SessionSerializer(serializers.ModelSerializer):
             "session_end_date", 
             "status", 
             "created_at", 
-            "updated_at", 
-            "courses"
+            "updated_at"
         ]
-    def get_courses(self, obj):
-        data = obj.course_set.all()
-        return CourseSerializer(data, many=True).data
+        
+    # def get_courses(self, obj):
+    #     data = obj.course_set.all()
+    #     return CourseSerializer(data, many=True).data
 
 # serialize subject assignment to instrucot
 

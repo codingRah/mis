@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from .models import Student,StudentBulkUpload, StudentStatus, StudentNationlityCartInfo, StudentHostelService, StudentRelationContact
-
+from accounts.serializers import UserSerializer
 
 class StudentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
     class Meta:
         model = Student
         fields = ['id','user','kankor_id','first_name','last_name','father_name','grand_father_name','school','score','department', 'gender','semester']

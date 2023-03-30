@@ -11,6 +11,8 @@ from . import models
 from . import serializers
 from . import filters
 from departments.models import Subject
+from students.models import Student
+from staff.models import Staff
 
 
 # staff list create update delete file start
@@ -52,13 +54,33 @@ class CourseViews(viewsets.ModelViewSet):
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     def create(self, request):
-        serializer = serializers.CourseSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        owner = request.data['owner']
+        session = request.data['session']
+        subject = request.data['subject']
+        code = request.data['code']
+        title = request.data['title']
+        description = request.data['description']
+        
+        try:
+            owner = Staff.objects.get(id=owner)
+            session = models.Session.objects.get(id=session)
+            subject = Subject.objects.get(id=subject)
+        except:
+            return Response({'error':'show related value is not matched'})    
+
+        course_create = models.Course.objects.create(
+            owner = owner,
+            session = session,
+            subject = subject,
+            code = code,
+            title = title,
+            description = description
+        )
+        
+        serializer = serializers.CourseSerializer(course_create)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        
     def update(self, request,pk=None):
         course = get_object_or_404(self.queryset, pk=pk)
         serializer = serializers.CourseSerializer(course, data=request.data)
