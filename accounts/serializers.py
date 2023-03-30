@@ -32,6 +32,8 @@ class UserAddressSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+
 class UserSerializerWithToken(serializers.ModelSerializer):
     token = serializers.SerializerMethodField(read_only=True)
     authority = serializers.SerializerMethodField(read_only=True)
