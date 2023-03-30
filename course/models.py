@@ -6,11 +6,9 @@ from django.utils import timezone
 from django.utils.text import slugify
 import string
 import random
+import uuid
+
 # Create your models here.
-
-def course_random_slug():
-    return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(30))
-
 
 def generate_course_code():
     return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
@@ -55,22 +53,18 @@ class Course(models.Model):
     owner = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
     session = models.ForeignKey(Session, on_delete=models.SET_NULL, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, blank=True)
-    students  = models.ManyToManyField(Student, related_name="join_course", blank=True)
     code = models.CharField(max_length=100, unique=True)
     title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=100, unique=True, editable=False)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(course_random_slug())
-
-        if not self.code:
-            self.code = slugify(generate_course_code())
-    
+            self.slug = slugify(str(uuid.uuid4()))
         super(Course, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return self.title
@@ -137,3 +131,11 @@ class ContentType(models.Model):
 
     def __str__(self):
         return f"{self.content.title}'s type"
+
+
+class AssignStudentToCourse(models.Model):
+    student = models.ManyToManyField(Student, null=True)
+    course = models.ManyToManyField(Course,  null=True)
+    
+    # def __str__(self) -> str:
+    #     return f"{self.student}-{self.course}"
