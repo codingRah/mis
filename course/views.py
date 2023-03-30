@@ -57,6 +57,7 @@ class CourseViews(viewsets.ModelViewSet):
         owner = request.data['owner']
         session = request.data['session']
         subject = request.data['subject']
+        student = request.data['student']
         code = request.data['code']
         title = request.data['title']
         description = request.data['description']
@@ -65,6 +66,7 @@ class CourseViews(viewsets.ModelViewSet):
             owner = Staff.objects.get(id=owner)
             session = models.Session.objects.get(id=session)
             subject = Subject.objects.get(id=subject)
+            student = Student.objects.get(id=student)
         except:
             return Response({'error':'show related value is not matched'})    
 
@@ -74,6 +76,7 @@ class CourseViews(viewsets.ModelViewSet):
             subject = subject,
             code = code,
             title = title,
+            student = student,
             description = description
         )
         

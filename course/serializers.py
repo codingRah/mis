@@ -22,6 +22,7 @@ class CourseSerializer(serializers.ModelSerializer):
     owner = StaffShortInfoSerializer(read_only=True)
     session = SessionShortInfoSerializer(read_only=True)
     subject = SubjectShortInfoSerializer(read_only=True)
+    student = StudentShortInfoSerializer(read_only=True)
     # detail = serializers.SerializerMethodField()
     # status  = serializers.SerializerMethodField(read_only=True)
     class Meta:
@@ -32,6 +33,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'session',
             'subject',
             'code', 
+            'student',
             'title', 
             'description', 
             'created_at', 
