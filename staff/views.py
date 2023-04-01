@@ -21,7 +21,7 @@ from . import filters
 class InstructorViews(viewsets.ModelViewSet):
     queryset = models.Staff.objects.all()
     serializer_class = serializers.InstructorSerializer
-    permission_classes= (IsAuthenticated,)
+    # permission_classes= (IsAuthenticated,)
     
 
     def list(self, request):

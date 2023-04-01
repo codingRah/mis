@@ -1,6 +1,21 @@
 from rest_framework import serializers
 from . import models
+from accounts.serializers import UserSerializer
+from departments.models import Department
+
+class DepartmentShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = [
+            'id',
+            'name',
+            'description',
+        ]
+
+
 class InstructorSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
+    department = DepartmentShortInfoSerializer(many=False, read_only=True)
     class Meta:
         model = models.Staff
         fields = ['id', 'user', 'first_name','last_name','father_name','gender','dob','department','bio','phone','status',]
