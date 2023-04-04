@@ -57,7 +57,7 @@ class CourseViews(viewsets.ModelViewSet):
         owner = request.data['owner']
         session = request.data['session']
         subject = request.data['subject']
-        student = request.data['student']
+        # student = request.data['student']
         code = request.data['code']
         title = request.data['title']
         description = request.data['description']
@@ -66,7 +66,7 @@ class CourseViews(viewsets.ModelViewSet):
             owner = Staff.objects.get(id=owner)
             session = models.Session.objects.get(id=session)
             subject = Subject.objects.get(id=subject)
-            student = Student.objects.get(id=student)
+            # student = Student.objects.get(id=student)
         except:
             return Response({'error':'show related value is not matched'})    
 
@@ -76,10 +76,21 @@ class CourseViews(viewsets.ModelViewSet):
             subject = subject,
             code = code,
             title = title,
-            student = student,
+            # student = student,
             description = description
         )
-        
+        students = []
+        for std in Student.objects.all():
+            # print(std)
+            if std.semester == course_create.subject.semester:
+            #     print(std)
+                students.append(std)
+            #     print(s, "dfghjhh")
+            # for students in std:
+        print(students)    
+        for students in students:      
+            course_create.student.add(students)    
+
         serializer = serializers.CourseSerializer(course_create)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         
