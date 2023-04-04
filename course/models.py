@@ -15,7 +15,7 @@ def generate_course_code():
 
 
 class SubjectAssignmentToInstructor(models.Model):
-    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    instructor = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE,null=True, blank=True)
     session = models.ForeignKey("Session", on_delete=models.CASCADE,null=True, blank=True)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE,null=True, blank=True)
@@ -70,7 +70,7 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-
+# status should be choices
 class CourseStatus(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE)
     status = models.CharField(max_length=100)

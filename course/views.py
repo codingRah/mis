@@ -13,6 +13,7 @@ from . import filters
 from departments.models import Subject
 from students.models import Student
 from staff.models import Staff
+from rest_framework.decorators import action
 
 
 # staff list create update delete file start
@@ -79,20 +80,9 @@ class CourseViews(viewsets.ModelViewSet):
             # student = student,
             description = description
         )
-        students = []
-        for std in Student.objects.all():
-            # print(std)
-            if std.semester == course_create.subject.semester:
-            #     print(std)
-                students.append(std)
-            #     print(s, "dfghjhh")
-            # for students in std:
-        print(students)    
-        for students in students:      
-            course_create.student.add(students)    
-
         serializer = serializers.CourseSerializer(course_create)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        course  = serializer.save()        
+        return Response(course, status=status.HTTP_201_CREATED)
         
         
     def update(self, request,pk=None):
@@ -136,13 +126,19 @@ class CourseStatusViews(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        serializer = serializers.CourseStatusSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        course = request.data.get('course')
+        status_course = request.data.get('status')
+        try:
+            course = models.Course.objects.get(id=course)
+        except:
+            return Response({'error':'some data is not matched'})   
+        course_status = models.CourseStatus.objects.create(
+            course=course,
+            status = status_course
+        ) 
+        serializer = serializers.CourseStatusSerializer(course_status)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      
     def update(self, request,pk=None):
         course_status = get_object_or_404(self.queryset, pk=pk)
         serializer = serializers.CourseStatusSerializer(course_status, data=request.data)
@@ -185,13 +181,21 @@ class CourseDetailViews(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        serializer = serializers.CourseDetailSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        course = request.data.get('course')
+        image = request.data.get('image')
+        color = request.data.get('color')
+        try:
+            course = models.Course.objects.get(id=course)
+        except:
+            return Response({'error':'some data is not matched'})   
+        course_detail = models.CourseDetail.objects.create(
+            course=course,
+            image = image,
+            color = color,
+        ) 
+        serializer = serializers.CourseDetailSerializer(course_detail)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      
     def update(self, request,pk=None):
         detail = get_object_or_404(self.queryset, pk=pk)
         serializer = serializers.CourseDetailSerializer(detail, data=request.data)
@@ -231,14 +235,25 @@ class CourseModuleViews(viewsets.ModelViewSet):
         serializer = serializers.ModuleSerializer(module)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def create(self, request):
-        serializer = serializers.ModuleSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def create(self, request):
+        course = request.data.get('course')
+        week = request.data.get('week')
+        description = request.data.get('description')
+        title = request.data.get('title')
+        try:
+            course = models.Course.objects.get(id=course)
+        except:
+            return Response({'error':'some data is not matched'})   
+        course_detail = models.Module.objects.create(
+            course=course,
+            week = week,
+            description = description,
+            title = title
+        ) 
+        serializer = serializers.ModuleSerializer(course_detail)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      
     def update(self, request, pk=None):
         module = get_object_or_404(self.queryset, pk=pk)
         serializer = serializers.ModuleSerializer(module, data=request.data)
@@ -276,15 +291,25 @@ class CourseEventViews(viewsets.ModelViewSet):
         event = get_object_or_404(self.queryset,pk=pk)
         serializer = serializers.CourseEventSerializer(event)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
-    def create(self , request):
-        serializer = serializers.CourseEventSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def create(self, request):
+        course = request.data.get('course')
+        end_at = request.data.get('end_at')
+        description = request.data.get('description')
+        title = request.data.get('title')
+        try:
+            course = models.Course.objects.get(id=course)
+        except:
+            return Response({'error':'some data is not matched'})   
+        event = models.CourseEvent.objects.create(
+            course=course,
+            end_at = end_at,
+            description = description,
+            title = title
+        ) 
+        serializer = serializers.CourseEventSerializer(event)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      
     def update(self,requset, pk=None):
         event = get_object_or_404(self.queryset,pk=pk)
         serializer = serializers.CourseEventSerializer(event, data=requset.data)
@@ -312,7 +337,7 @@ class CourseEventViews(viewsets.ModelViewSet):
 class CourseContentViews(viewsets.ModelViewSet):
     queryset = models.Content.objects.all()
     serializer_class = serializers.ContentSerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def list(self,request):
         content = models.Content.objects.all()
@@ -323,15 +348,24 @@ class CourseContentViews(viewsets.ModelViewSet):
         content = get_object_or_404(self.queryset,pk=pk)
         serializer = serializers.ContentSerializer(content)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
-    def create(self , request):
-        serializer = serializers.ContentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    
+    def create(self, request):
+        module = request.data.get('module')
+        description = request.data.get('description')
+        title = request.data.get('title')
+        try:
+            module = models.Module.objects.get(id=module)
+        except:
+            return Response({'error':'some data is not matched'})   
+        module_create = models.Content.objects.create(
+            module=module,
+            description = description,
+            title = title
+        ) 
+        serializer = serializers.ContentSerializer(module_create)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      
     def update(self,requset, pk=None):
         content = get_object_or_404(self.queryset,pk=pk)
         serializer = serializers.ContentSerializer(content, data=requset.data)
@@ -370,15 +404,25 @@ class CourseContentTypeViews(viewsets.ModelViewSet):
         contenttype = get_object_or_404(self.queryset, pk=pk)
         serializer = serializers.ContentTypeSerializer(contenttype)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def create(self, request):
-        serializer = serializers.ContentTypeSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def create(self, request):
+        content = request.data.get('content')
+        url = request.data.get('url')
+        file = request.data.get('file')
+        image = request.data.get('image')
+        try:
+            content = models.Content.objects.get(id=content)
+        except:
+            return Response({'error':'some data is not matched'})   
+        content_type = models.ContentType.objects.create(
+            content=content,
+            url = url,
+            file = file,
+            image = image
+        ) 
+        serializer = serializers.ContentTypeSerializer(content_type)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      
     
     def update(self, request, pk=None):
         contenttype = get_object_or_404(self.queryset, pk=pk)
@@ -469,16 +513,33 @@ class SubjectAssignmentToInstructorViews(viewsets.ModelViewSet):
         serializer = serializers.SubjectAssignmentToInstructorSerializer(sub_instructor)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
     def create(self, request):
-        serializer = serializers.SubjectAssignmentToInstructorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            print(f"serialiser: {serializer}")
-            
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        session = request.data['session']
+        instructor = request.data['instructor']
+        subject = request.data['subject']
+        semester = request.data['semester']
+        
+        try:
+            instructor = Staff.objects.get(id=instructor)
+            session = models.Session.objects.get(id=session)
+            subject = Subject.objects.get(id=subject)
+            semester = models.Semester.objects.get(id=semester)
+        except:
+            return Response({'error':'show related value is not matched'})    
+
+        assignment_to_instructor = models.SubjectAssignmentToInstructor.objects.create(
+            instructor = instructor,
+            session = session,
+            subject = subject,
+            semester = semester
+        )
+        serializer = serializers.SubjectAssignmentToInstructorSerializer(assignment_to_instructor)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        
+
+
     def update(self, request,pk=None):
         sub_instructor = get_object_or_404(self.queryset, pk=pk)
         serializer = serializers.SubjectAssignmentToInstructorSerializer(sub_instructor, data=request.data)

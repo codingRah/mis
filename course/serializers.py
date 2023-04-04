@@ -156,7 +156,7 @@ class SessionSerializer(serializers.ModelSerializer):
 # serialize subject assignment to instrucot
 
 class SubjectAssignmentToInstructorSerializer(serializers.ModelSerializer):
-    instructor = StaffShortInfoSerializer(many=True, read_only=True)
+    instructor = StaffShortInfoSerializer(many=False, read_only=True)
     subject = serializers.SerializerMethodField(read_only=True)
     session = serializers.SerializerMethodField(read_only=True)
     semester = serializers.SerializerMethodField(read_only=True)
