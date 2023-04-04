@@ -3,7 +3,7 @@ from .models import *
 from accounts.serializers import StaffShortInfoSerializer
 from departments.models import Subject
 from departments.serializers import SubjectShortInfoSerializer, SemesterSerializer
-from students.serializers import StudentShortInfoSerializer
+from students.serializers import StudentSerializer
 
 
 class SessionShortInfoSerializer(serializers.ModelSerializer):
@@ -22,7 +22,7 @@ class CourseSerializer(serializers.ModelSerializer):
     owner = StaffShortInfoSerializer(read_only=True)
     session = SessionShortInfoSerializer(read_only=True)
     subject = SubjectShortInfoSerializer(read_only=True)
-    student = StudentShortInfoSerializer(read_only=True)
+    # student = StudentSerializer(read_only=True, many=True)
     # detail = serializers.SerializerMethodField()
     # status  = serializers.SerializerMethodField(read_only=True)
     class Meta:
