@@ -1,14 +1,15 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('chief', views.DepartmentChiefView, basename='chief')
 
 urlpatterns = [
     # department url
+    path('', include(router.urls)),
     path('create-list/', views.department_list_create_view),
     path('update-delete/<int:pk>/', views.department_update_delete_view),
-    
-    # department chief url
-    path('chief/create-list/', views.department_chief_list_create_view),
-    path('chief/update-delete/<int:pk>/', views.department_chief_update_delete_view),
     
     # department program level url
     path('programlevel/create-list/', views.department_programlevel_list_create_view),

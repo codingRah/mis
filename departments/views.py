@@ -8,6 +8,9 @@ from rest_framework.decorators import permission_classes
 from django.contrib.auth.models import Permission
 from rest_framework.pagination import PageNumberPagination
 from . import models
+from accounts.models import User
+from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
 
 
 # department list create update delete file start
@@ -73,64 +76,92 @@ def department_update_delete_view(request, slug):
         department.delete()
         return Response({'message': 'Successfully department deleted!!'}, status=status.HTTP_200_OK)
 
-# department create upadate ... end
 
-
-# department Chief CRUD start
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
-def department_chief_list_create_view(request):
-    if request.method == 'GET':
+class DepartmentChiefView(viewsets.ModelViewSet):
+    queryset = models.DepartmentChief.objects.all()
+    serializer_class = serializers.DepartmentChiefSerilizer
+    # authentication_classes = (IsAuthenticated, )
+    def list(self, request):
         chief = models.DepartmentChief.objects.all()
         serializer = serializers.DepartmentChiefSerilizer(chief, many=True)
-        return Response(serializer.data)
-    if request.method == 'POST':
-        serializer = serializers.DepartmentChiefSerilizer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response({'error':'data is not valid!!'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
-def department_chief_update_delete_view(request, pk):
-    if request.method == "GET":
-        chief = models.DepartmentChief.objects.get(pk=pk)
+    def retrieve(self, request, pk=None):
+        chief = get_object_or_404(self.queryset, pk=pk)
         serializer = serializers.DepartmentChiefSerilizer(chief)
-        return Response(serializer.data)
-    if request.method == 'PUT':
-        chief = models.DepartmentChief.objects.get(pk=pk)
-        serializer = serializers.DepartmentChiefSerilizer(data=request.data, instance=chief)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        data = request.data
+        department = data.get('department')
+        user = data.get('user')
+        from_date = data.get('from_date')
+        to_date = data.get('to_date')
+        try:
+            department = models.Department.objects.get(id=department)
+            user = User.objects.get(id=user)
+        except:
+            return Response({'error':'some data is not matched'})   
+        chief_create = models.DepartmentChief.objects.create(
+            department=department,
+            user = user,
+            from_date = from_date,
+            to_date = to_date
+        ) 
+        print(chief_create)
+        serializer = serializers.DepartmentChiefSerilizer(chief_create, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      
+    def update(self, request,pk=None):
+        chief = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.DepartmentChiefSerilizer(chief, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({'error':'data is not valid!!'}, status=status.HTTP_400_BAD_REQUEST)
-    if request.method == 'DELETE':        
-        chief = models.DepartmentChief.objects.get(pk=pk)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        chief = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.DepartmentChiefSerilizer(chief, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        chief = get_object_or_404(self.queryset, pk=pk)
         chief.delete()
-        return Response({'message': 'Successfully department chief deleted!!'}, status=status.HTTP_200_OK)
-    
-# end of department 
+        return Response({"message": "Department chief deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+
 
 # department program level CRUD start
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def department_programlevel_list_create_view(request):
+    data = request.data
     if request.method == 'GET':
         programlevel = models.DepartmentProgramLevel.objects.all()
         serializer = serializers.DepartmentProgramLevelSerializer(programlevel, many=True)
         return Response(serializer.data)
+    
     if request.method == 'POST':
-        serializer = serializers.DepartmentProgramLevelSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response({'error':'data is not valid!!'}, status=status.HTTP_400_BAD_REQUEST)
-
+        department = data.get('department')
+        level = data.get('level')
+        try:
+            department = models.Department.objects.get(id=department)
+        except:
+            return Response({'error':'some data is not matched'})   
+        level_created = models.DepartmentProgramLevel.objects.create(
+            department=department,
+            level = level,
+        ) 
+        print(level_created)
+        serializer = serializers.DepartmentProgramLevelSerializer(level_created, many=False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
