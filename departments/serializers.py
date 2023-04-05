@@ -10,18 +10,7 @@ from .models import Subject
 class UserShortInforSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "email"]
-
-class DepartmentChiefSerilizer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField(read_only=True)
-    class Meta:
-        model = DepartmentChief
-        fields = ['id','department','user','from_date','to_date']
-
-
-    def get_user(self, obj):
-        data = obj.user
-        return UserShortInforSerializer(data, many=False).data
+        fields = ['id', "username", "email"]
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -44,15 +33,40 @@ class DepartmentSerializer(serializers.ModelSerializer):
         data = obj.student_set.all()
         return StudentSerializer(data, many=True).data
 
+class DepartmentShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = ['id', 'name', 'description', 'status']
+
+class DepartmentChiefSerilizer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(read_only=True)
+    department = serializers.SerializerMethodField(read_only=True)
+    # department = DepartmentSerializer(many=False, read_only=True)
+    
+    class Meta:
+        model = DepartmentChief
+        fields = ['id','department', 'user','from_date','to_date']
+
+
+    def get_user(self, obj):
+        data = obj.user
+        return UserShortInforSerializer(data, many=False).data
+
+    def get_department(self, obj):
+        return obj.department.name
+        # return DepartmentSerializer(data, many=False).data
+
     
 
 class DepartmentProgramLevelSerializer(serializers.ModelSerializer):
+    department = DepartmentShortInfoSerializer(many=False, read_only=True)
     class Meta:
         model = DepartmentProgramLevel
         fields = ['id','department','level']
         
         
 class SemesterSerializer(serializers.ModelSerializer):
+    program = DepartmentProgramLevelSerializer(many=False, read_only=True)
     class Meta:
         model = Semester
         fields = ['id','program','semester_number','semester_name']
@@ -76,4 +90,4 @@ class SubjectSerializer(serializers.ModelSerializer):
 class SubjectShortInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ['name','credit']
+        fields = ['id', 'name','credit']
