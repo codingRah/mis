@@ -48,6 +48,7 @@ def create_bulk_student(sender, created, instance, *args, **kwargs):
                 password = row["password"] if "password" in row and row["password"] else ""
 
                 semester = row["semester"] if "semester" in row and row["semester"] else ""
+                print(semester.strip(), "sdfsldfkjl;lsadf ")
                 department = (
                     row["department"]
                     if "department" in row and row["department"]
@@ -55,12 +56,12 @@ def create_bulk_student(sender, created, instance, *args, **kwargs):
                 )
                 if department:
                     theclass, kind = Department.objects.get_or_create(
-                        name=department
+                        name=department.strip()
                     )
 
                 if semester:
                     sem = Semester.objects.get(
-                        semester_name=semester
+                        semester_name=semester.strip()
                     )
 
                 if username and email and password:

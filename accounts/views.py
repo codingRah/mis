@@ -37,11 +37,14 @@ def user_list_create_view(request):
     
     if request.method == 'POST':
         data  = request.data
+        print(data, "this is data")
+        
         username = data["username"]
         email = data["email"]
         password = data["password"]
         re_password = data["re_password"]
-        user_type = data["user_type"]
+        # user_type = data["user_type"]['value']
+        # print(user_type, "sdfsdf")
         if User.objects.filter(email=email).exists():
             return Response({"message" : "User with this email already exists "}, status=status.HTTP_400_BAD_REQUEST)
         elif User.objects.filter(username=username).exists():
@@ -64,12 +67,13 @@ def user_list_create_view(request):
                 username=username,
                 password=password
             )
-            for t in user_type:
-                u_type = UserType.objects.get(id=t['value'])
-                user.user_type.add(u_type)
-                user.save()
-                serializer = UserSerializerWithToken(user, many=False)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            # for t in user_type:
+            #     print(t, "dsfsdfsdfsdf")
+            #     u_type = UserType.objects.get(id=t['value'])
+            #     user.user_type.add(u_type)
+            #     user.save()
+            serializer = UserSerializerWithToken(user, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
