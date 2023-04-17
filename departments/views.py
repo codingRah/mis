@@ -150,18 +150,21 @@ def department_programlevel_list_create_view(request):
     
     if request.method == 'POST':
         department = data.get('department')
-        level = data.get('level')
+        levels = data.get('levels')
+        
         try:
-            department = models.Department.objects.get(id=department)
+            department = models.Department.objects.get(slug=department)
         except:
             return Response({'error':'some data is not matched'})   
-        level_created = models.DepartmentProgramLevel.objects.create(
-            department=department,
-            level = level,
-        ) 
-        print(level_created)
+        for level in levels:
+            level_created = models.DepartmentProgramLevel.objects.create(
+                department=department,
+                level = level,
+            ) 
+            level_created.save()
         serializer = serializers.DepartmentProgramLevelSerializer(level_created, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
